@@ -54,6 +54,7 @@ namespace cagd
 
         QTimer *_timer;
         GLfloat _angle;
+        GLfloat _mangle;
 
         TriangulatedMesh3 _animal;
 
@@ -90,6 +91,9 @@ namespace cagd
         void set_trans_z(double value);
 
         void setParametricCurve( int index);
+
+    private slots:
+        void _rotateModel();
 
     private:
         void initializeFirst();
