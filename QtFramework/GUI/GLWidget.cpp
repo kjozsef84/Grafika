@@ -16,13 +16,14 @@ namespace cagd
     {
 
         _timer = new QTimer(this);
-        _timer->setInterval(20);
+        _timer->setInterval(10);
         connect(_timer,SIGNAL(timeout()),this,SLOT(_animate()));
+        connect(_timer,SIGNAL(timeout()),this,SLOT(_rotateModel()));
 
     }
 
     GLWidget::~GLWidget(){
-
+/*
         switch (homeworkNumber) {
             case 1:
                 for(GLuint i = 0 ; i < _pc_count; i++ ){
@@ -32,7 +33,6 @@ namespace cagd
                         delete _img_pc[i], _img_pc[i] = nullptr;
                 }
                 break;
-        }
            /* case 3:
             cout << "szia" << endl;
                 for(GLuint i = 0 ; i < _ps_count; i++ ){
@@ -70,6 +70,7 @@ namespace cagd
         // setting the model view matrix
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
+
 
         _eye[0] = _eye[1] = 0.0, _eye[2] = 6.0;
         _center[0] = _center[1] = _center[2] = 0.0;
@@ -119,10 +120,7 @@ namespace cagd
         glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
         glEnable(GL_POLYGON_SMOOTH);
         glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-
-     /*   if ( homeworkNumber != 1 ){
-           glEnable(GL_LIGHTING);
-        }*/
+        glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
         glEnable(GL_NORMALIZE);
 
@@ -554,18 +552,23 @@ namespace cagd
 
     void GLWidget::initializeAnimal(){
 
-        if ( _animal.LoadFromOFF("Models/mouse.off", true)){
+
+        if ( _animal.LoadFromOFF("Models/elephant.off", true)){
             if(_animal.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)){
-                _angle = 0.0;
+                _mangle = 0.0;
                 _timer->start();
             }
         }
     }
     void GLWidget::drawAnimal(){
-          glEnable(GL_LIGHTING);
+
+        glPushMatrix();
+        glRotatef(_mangle, 1.0, 1.0, 1.0);
         MatFBRuby.Apply();
         _animal.Render();
-          glDisable(GL_LIGHTING);
+        glPopMatrix();
+
+
 
     }
 
@@ -583,10 +586,22 @@ namespace cagd
                 *vertex += scale * (*normal);
             }
         }
-        set_angle_x(_angle_x + 1);        //radianban varja
-        //set_angle_y(_angle_y+1);
+        //set_angle_x(_angle_x + 1);
+        //set_angle_y(_angle_y + 1);
         _animal.UnmapVertexBuffer();
         _animal.UnmapNormalBuffer();
+
+        updateGL();
+    }
+
+    void GLWidget::_rotateModel()
+    {
+        _mangle += 1.0;
+
+        if (_mangle > 360.0)
+        {
+            _mangle -= 360.0;
+        }
 
         updateGL();
     }
@@ -625,6 +640,7 @@ namespace cagd
 
         _img_ps.ResizeColumns(_ps_count);
 
+
         for( GLuint i = 0; i < _ps_count; i++ ){
             if ( _ps[i] ){
                 _img_ps[i] = _ps[i] -> GenerateImage(_pointCount, _pointCount);	//test letezik e a kep vagy se
@@ -639,10 +655,9 @@ namespace cagd
 
 
     void GLWidget::drawSurface(){
-        glEnable(GL_LIGHTING);
         MatFBRuby.Apply();
         _img_ps[_ps_selected]->Render();
-          glDisable(GL_LIGHTING);
+
    }
 
 }

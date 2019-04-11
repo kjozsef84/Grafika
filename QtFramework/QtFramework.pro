@@ -72,9 +72,7 @@ HEADERS += \
     Core/TriangularFaces.h \
     Core/TCoordinates4.h \
     Core/HCoordinates3.h \
-    Parametric/ParametricSurfaces3.h \
-    Core/LinearCombination3.h \
-    Core/TensorProductSurfaces3.h
+    Parametric/ParametricSurfaces3.h
 
 SOURCES += \
     Core/GenericCurves3.cpp \
@@ -88,12 +86,13 @@ SOURCES += \
     Core/Materials.cpp \
     Core/Lights.cpp \
     Core/TriangulatedMeshes3.cpp \
-    Parametric/ParametricSurfaces3.cpp \
-    Core/LinearCombination3.cpp \
-    Core/TensorProductSurfaces3.cpp
+    Parametric/ParametricSurfaces3.cpp
 
 FORMS += \
     GUI/MainWindow.ui \
     GUI/SideWidget.ui
+
+DISTFILES += \
+    Models/elephant.off
 
 
