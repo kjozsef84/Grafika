@@ -23,7 +23,7 @@ namespace cagd
     }
 
     GLWidget::~GLWidget(){
-/*
+
         switch (homeworkNumber) {
             case 1:
                 for(GLuint i = 0 ; i < _pc_count; i++ ){
@@ -33,6 +33,14 @@ namespace cagd
                         delete _img_pc[i], _img_pc[i] = nullptr;
                 }
                 break;
+             case 5:
+                if( _before_interpolation )
+                    delete _before_interpolation, _before_interpolation = 0;
+                if( _after_interpolation )
+                    delete _after_interpolation, _after_interpolation = 0;
+                break;
+        }
+
            /* case 3:
             cout << "szia" << endl;
                 for(GLuint i = 0 ; i < _ps_count; i++ ){
@@ -83,6 +91,7 @@ namespace cagd
 
         // setting the background color
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         // initial values of transformation parameters
         _angle_x = _angle_y = _angle_z = 0.0;
@@ -127,11 +136,11 @@ namespace cagd
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         glEnable(GL_DEPTH_TEST);
 
-        glewInit();
+       // glewInit();
 
 //------------------------------------------------------------------
 
-        homeworkNumber = 2;
+        homeworkNumber = 5;
 
 //------------------------------------------------------------------
         switch ( homeworkNumber ) {
@@ -144,6 +153,12 @@ namespace cagd
                 break;
             case 3:
                 initalizeSurface();
+                break;
+            case 4:
+                initializeCyclicCurve();
+                break;
+            case 5:
+                initializeBicubicSpline();
                 break;
         }
 
@@ -209,6 +224,12 @@ namespace cagd
                     break;
                 case 3:
                     drawSurface();
+                    break;
+                case 4:
+                    renderCyclicCurve();
+                    break;
+                case 5:
+                    renderBicubicSpline();
                     break;
             }
 
@@ -563,9 +584,11 @@ namespace cagd
     void GLWidget::drawAnimal(){
 
         glPushMatrix();
+        glEnable(GL_LIGHTING);
         glRotatef(_mangle, 1.0, 1.0, 1.0);
         MatFBRuby.Apply();
         _animal.Render();
+        glDisable(GL_LIGHTING);
         glPopMatrix();
 
 
@@ -655,10 +678,137 @@ namespace cagd
 
 
     void GLWidget::drawSurface(){
+        glEnable(GL_LIGHTING);
         MatFBRuby.Apply();
         _img_ps[_ps_selected]->Render();
-
+        glDisable(GL_LIGHTING);
    }
+
+    void GLWidget::initializeCyclicCurve(){
+        GLuint _n = 30;
+        _cyc3 = new CyclicCurve3(_n);
+        if ( !_cyc3 ){
+            throw ("Cannot create a generic curve");
+        }
+        //_cyc3-> UpdateVertexBufferObjectsOfData();
+
+        GLdouble step = TWO_PI/(2 * _n + 1);
+        for(GLuint i = 0; i <= 2 * _n; i++)
+        {
+            GLdouble u = i * step;
+            DCoordinate3 &cp = (*_cyc3)[i];
+            cp[0] = cos(u);
+            cp[1] = sin(u);
+            cp[2] = -2.0 + 4.0 * (GLdouble)rand() / (GLdouble)RAND_MAX;
+        }
+
+        _image_of_cyc3 = _cyc3->GenerateImage(2,400);
+        if ( ! _image_of_cyc3 ){
+            throw ("Cannot create the image of the generic curve");
+        }
+       _image_of_cyc3 ->UpdateVertexBufferObjects();
+    }
+    void GLWidget::renderCyclicCurve(){
+       glColor3f(0.0f,0.8f,0.0f);
+       _image_of_cyc3->RenderDerivatives(0,GL_POINTS);
+       glColor3f(0.0f,0.8f,1.0f);
+       _image_of_cyc3->RenderDerivatives(1,GL_LINES);
+       glColor3f(1.0f,0.8f,1.0f);
+       _image_of_cyc3->RenderDerivatives(2,GL_LINES);
+       glPointSize(3.0f);
+
+    }
+
+    void GLWidget::initializeBicubicSpline(){
+
+        glewInit();
+
+        _patch.SetData(0,0,-2,-2,0);
+        _patch.SetData(0,1,-2,-1,0);
+        _patch.SetData(0,2,-2,1,0);
+        _patch.SetData(0,3,-2,2,0);
+
+        _patch.SetData(1,0,-1,-2,0);
+        _patch.SetData(1,1,-1,-1,2);
+        _patch.SetData(1,2,-1,1,2);
+        _patch.SetData(1,3,-1,2,0);
+
+        _patch.SetData(2,0,1,-2,0);
+        _patch.SetData(2,1,1,-1,2);
+        _patch.SetData(2,2,1,1,2);
+        _patch.SetData(2,3,1,2,0);
+
+        _patch.SetData(3,0,2,-2,0);
+        _patch.SetData(3,1,2,-1,0);
+        _patch.SetData(3,2,2,1,0);
+        _patch.SetData(3,3,2,2,0);
+
+
+        _patch.UpdateVertexBufferObjectsOfData();
+        _before_interpolation = _patch.GenerateImage(30,30);
+        if ( _before_interpolation ){
+            _before_interpolation ->UpdateVertexBufferObjects();
+
+         }
+
+        if ( _before_interpolation == nullptr )
+            cout << " null pointer " << endl;
+
+        RowMatrix<GLdouble> u_knot_vector(4);
+        u_knot_vector(0) = 0.0;
+        u_knot_vector(1) = 1.0/3.0;
+        u_knot_vector(2) = 2.0/3.0;
+        u_knot_vector(3) = 1.0;
+
+
+        ColumnMatrix<GLdouble> v_knot_vector(4);
+        v_knot_vector(0) = 0.0;
+        v_knot_vector(1) = 1.0/3.0;
+        v_knot_vector(2) = 2.0/3.0;
+        v_knot_vector(3) = 1.0;
+
+
+
+        Matrix<DCoordinate3> data_points_to_interpolate(4,4);
+        for ( GLuint row = 0 ; row < 4; row++) {
+            for( GLuint column = 0; column < 4; column ++)
+                _patch.GetData(row,column, data_points_to_interpolate(row,column));
+        }
+
+        if ( _patch.UpdateDataForInterpolation(u_knot_vector, v_knot_vector, data_points_to_interpolate))
+        {
+            _after_interpolation = _patch.GenerateImage(30,30,GL_STATIC_DRAW);
+            if( _after_interpolation )
+                _after_interpolation->UpdateVertexBufferObjects();
+        }
+    }
+
+    GLvoid GLWidget::renderBicubicSpline(){
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glPushMatrix();
+        glEnable(GL_LIGHTING);
+
+            if ( _before_interpolation )
+            {
+                MatFBRuby.Apply();
+                if ( !_before_interpolation->Render() )
+                    cout << "hiba" << endl;
+            }
+
+            if ( _after_interpolation )
+            {
+                glEnable(GL_BLEND);
+                glDepthMask(GL_FALSE);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                    MatFBTurquoise.Apply();
+                    _after_interpolation ->Render();
+                glDepthMask(GL_TRUE);
+                glDisable(GL_BLEND);
+            }
+
+        glPopMatrix();
+        //glDisable(GL_LIGHTING);
+    }
 
 }
 

@@ -72,7 +72,13 @@ HEADERS += \
     Core/TriangularFaces.h \
     Core/TCoordinates4.h \
     Core/HCoordinates3.h \
-    Parametric/ParametricSurfaces3.h
+    Parametric/ParametricSurfaces3.h \
+    Core/LinearCombination3.h \
+    Core/TensorProductSurfaces3.h \
+    Cyclic/CyclicCurve3.h \
+    Cyclic/CyclicCurve3.h \
+    Core/bicubicbsplinepatch.h \
+    Core/BicubicBSplinePatch.h
 
 SOURCES += \
     Core/GenericCurves3.cpp \
@@ -86,7 +92,13 @@ SOURCES += \
     Core/Materials.cpp \
     Core/Lights.cpp \
     Core/TriangulatedMeshes3.cpp \
-    Parametric/ParametricSurfaces3.cpp
+    Parametric/ParametricSurfaces3.cpp \
+    Core/LinearCombination3.cpp \
+    Core/TensorProductSurfaces3.cpp \
+    Cyclic/CyclicCurve3.cpp \
+    Cyclic/CyclicCurve3.cpp \
+    Core/bicubicbsplinepatch.cpp \
+    Core/BicubicBSplinePatch.cpp
 
 FORMS += \
     GUI/MainWindow.ui \

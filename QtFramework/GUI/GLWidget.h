@@ -13,6 +13,8 @@
 #include "../Core/Materials.h"
 #include <Core/Exceptions.h>
 #include "../Parametric/ParametricSurfaces3.h"
+#include "../Cyclic/CyclicCurve3.h"
+#include "../Core/bicubicbsplinepatch.h"
 
 namespace cagd
 {
@@ -62,6 +64,18 @@ namespace cagd
         RowMatrix<ParametricSurface3 *> _ps;
         RowMatrix<TriangulatedMesh3 *> _img_ps;
 
+
+//------------      Lab4        ---------------
+
+    CyclicCurve3* _cyc3;
+    GenericCurve3* _image_of_cyc3;
+
+
+//------------      Lab4_2      ---------------
+
+    BicubicBSplinePatch _patch;
+    TriangulatedMesh3 *_before_interpolation, *_after_interpolation;
+
 //------------      Private Slots
 
     private slots:
@@ -102,6 +116,9 @@ namespace cagd
         void drawAnimal();
         void initalizeSurface();
         void drawSurface();
-
+        void initializeCyclicCurve();
+        void renderCyclicCurve();
+        void initializeBicubicSpline();
+        void renderBicubicSpline();
     };
 }
