@@ -6,6 +6,7 @@ using namespace cagd;
 
 int main(int argc, char **argv)
 {
+
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
     std::cout << " szia";
     // creating an application object and setting one of its attributes

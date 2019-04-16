@@ -368,10 +368,12 @@ GLboolean TriangulatedMesh3::SaveToOFF(const std::string& file_name) const{ //--
 
 
     f << _vertex.size() << " " << _face.size() << " " <<  0 << std::endl;
+   // cout << _vertex.size() << " " << _face.size() << " " <<  0 << std::endl;
 
     for (vector<DCoordinate3>::const_iterator vit = _vertex.begin(); vit != _vertex.end(); ++vit)
     {
         f << vit->x() << " " << vit->y() << " " << vit -> z() << std::endl;
+        cout << vit->x() << " " << vit->y() << " " << vit -> z() << std::endl;
 
     }
 

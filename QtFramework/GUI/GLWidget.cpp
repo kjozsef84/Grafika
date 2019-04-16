@@ -747,6 +747,7 @@ namespace cagd
         _patch.UpdateVertexBufferObjectsOfData();
         _before_interpolation = _patch.GenerateImage(30,30);
         if ( _before_interpolation ){
+            _before_interpolation->SaveToOFF("proba.off");
             _before_interpolation ->UpdateVertexBufferObjects();
 
          }
