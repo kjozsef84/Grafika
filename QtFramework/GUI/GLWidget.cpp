@@ -745,7 +745,7 @@ namespace cagd
 
 
         _patch.UpdateVertexBufferObjectsOfData();
-        _before_interpolation = _patch.GenerateImage(10,10);
+        _before_interpolation = _patch.GenerateImage(30,30);
         if ( _before_interpolation ){
             _before_interpolation ->UpdateVertexBufferObjects();
            // _before_interpolation->SaveToOFF("proba.off");
@@ -777,7 +777,7 @@ namespace cagd
 
         if ( _patch.UpdateDataForInterpolation(u_knot_vector, v_knot_vector, data_points_to_interpolate))
         {
-            _after_interpolation = _patch.GenerateImage(10,10);
+            _after_interpolation = _patch.GenerateImage(30,30);
             if( _after_interpolation ){
                 if ( !_after_interpolation->UpdateVertexBufferObjects() ){
                     cout << " Error, the after interpolation vertexBufferObject was unsuccesfull" << endl;
@@ -787,7 +787,6 @@ namespace cagd
             }
         }
     }
-
 
     GLvoid GLWidget::renderBicubicSpline(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
