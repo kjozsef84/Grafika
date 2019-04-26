@@ -747,13 +747,12 @@ namespace cagd
         _patch.UpdateVertexBufferObjectsOfData();
         _before_interpolation = _patch.GenerateImage(30,30);
         if ( _before_interpolation ){
-            _before_interpolation->SaveToOFF("proba.off");
             _before_interpolation ->UpdateVertexBufferObjects();
+           // _before_interpolation->SaveToOFF("proba.off");
 
+         } else {
+            cout << "Error, the after interpolation is not created ";
          }
-
-        if ( _before_interpolation == nullptr )
-            cout << " null pointer " << endl;
 
         RowMatrix<GLdouble> u_knot_vector(4);
         u_knot_vector(0) = 0.0;
@@ -778,9 +777,14 @@ namespace cagd
 
         if ( _patch.UpdateDataForInterpolation(u_knot_vector, v_knot_vector, data_points_to_interpolate))
         {
-            _after_interpolation = _patch.GenerateImage(30,30,GL_STATIC_DRAW);
-            if( _after_interpolation )
-                _after_interpolation->UpdateVertexBufferObjects();
+            _after_interpolation = _patch.GenerateImage(30,30);
+            if( _after_interpolation ){
+                if ( !_after_interpolation->UpdateVertexBufferObjects() ){
+                    cout << " Error, the after interpolation vertexBufferObject was unsuccesfull" << endl;
+                }
+            } else {
+                cout << "Error, the after interpolation is not created ";
+            }
         }
     }
 
@@ -793,22 +797,35 @@ namespace cagd
             {
                 MatFBRuby.Apply();
                 if ( !_before_interpolation->Render() )
-                    cout << "hiba" << endl;
+                    cout << "Error, can't render the before interpolation" << endl;
             }
-
+            else {
+                cout << " Error, before interpolation" << endl;
+            }
+            /*
             if ( _after_interpolation )
             {
+
                 glEnable(GL_BLEND);
                 glDepthMask(GL_FALSE);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE);
                     MatFBTurquoise.Apply();
-                    _after_interpolation ->Render();
+                    if ( !_after_interpolation ->Render() )
+                        cout << "Error, can't render the after interpolation " << endl;
                 glDepthMask(GL_TRUE);
                 glDisable(GL_BLEND);
             }
+            else {
+                cout << " Error, after interpolation " << endl;
+            }
+            */
 
-        glPopMatrix();
-        //glDisable(GL_LIGHTING);
+            glPointSize(5.0f);
+                _after_interpolation->Render(GL_POINTS);
+            glPointSize(1.0f);
+
+            glPopMatrix();
+        glDisable(GL_LIGHTING);
     }
 
 }

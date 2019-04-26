@@ -86,6 +86,7 @@ GLboolean TriangulatedMesh3::Render(GLenum render_mode) const
     if (render_mode != GL_TRIANGLES && render_mode != GL_POINTS)
         return GL_FALSE;
 
+
     // enable client states of vertex, normal and texture coordinate arrays
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
@@ -368,17 +369,18 @@ GLboolean TriangulatedMesh3::SaveToOFF(const std::string& file_name) const{ //--
 
 
     f << _vertex.size() << " " << _face.size() << " " <<  0 << std::endl;
-   // cout << _vertex.size() << " " << _face.size() << " " <<  0 << std::endl;
+    // cout << _vertex.size() << " " << _face.size() << " " <<  0 << std::endl;
 
     for (vector<DCoordinate3>::const_iterator vit = _vertex.begin(); vit != _vertex.end(); ++vit)
     {
         f << vit->x() << " " << vit->y() << " " << vit -> z() << std::endl;
-        cout << vit->x() << " " << vit->y() << " " << vit -> z() << std::endl;
+        // cout << vit->x() << " " << vit->y() << " " << vit -> z() << std::endl;
 
     }
 
-    for (vector<TriangularFace>::const_iterator fit = _face.begin(); fit != _face.end(); ++fit)
-        f << fit[0] << " " << fit[1] << " " << fit[2] << std::endl;
+    for (vector<TriangularFace>::const_iterator fit = _face.begin(); fit != _face.end(); ++fit){
+        f << fit[0] << endl;
+    }
 
     f.close();
     return GL_TRUE;

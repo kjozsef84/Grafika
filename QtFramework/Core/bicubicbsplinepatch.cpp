@@ -73,15 +73,15 @@ CalculatePartialDerivatives(GLuint maximum_order_of_partial_derivatives,
     w1 = 1 - v; w2 = w1 *  w1; w3 = w1 * w2;
 
 
-    u_blending_values(0) =  w3 / 6.0;
-    u_blending_values(1) = ( 3 * v * w2 + 3 * w1 + 1 ) / 6;
-    u_blending_values(2) = ( 3 * v2 * w2 + 3 * v + 1 ) / 6;
-    u_blending_values(3) = v3 / 6;
+    v_blending_values(0) =  w3 / 6.0;
+    v_blending_values(1) = ( 3 * v * w2 + 3 * w1 + 1 ) / 6;
+    v_blending_values(2) = ( 3 * v2 * w2 + 3 * v + 1 ) / 6;
+    v_blending_values(3) = v3 / 6;
 
-    d1_u_blending_values(0) = w2 / - 2 ;
-    d1_u_blending_values(1) = ( w2 - 2 * v * w1 - 1 ) / 2;
-    d1_u_blending_values(2) = ( 2 * v * w1 - v2 + 1 ) / 2;
-    d1_u_blending_values(3) = v2 / 2;
+    d1_v_blending_values(0) = w2 / - 2 ;
+    d1_v_blending_values(1) = ( w2 - 2 * v * w1 - 1 ) / 2;
+    d1_v_blending_values(2) = ( 2 * v * w1 - v2 + 1 ) / 2;
+    d1_v_blending_values(3) = v2 / 2;
 
     pd.ResizeRows(2);
     pd.LoadNullVectors();
