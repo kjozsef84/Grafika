@@ -30,6 +30,7 @@ namespace cagd
     {
         bc.ResizeRows (m + 1);
         bc (0, 0) = 1.0;
+
         for (GLuint r = 1; r <= m; ++r)
         {
             bc (r, 0) = 1.0;
@@ -40,12 +41,14 @@ namespace cagd
                 bc (r, r - i) = bc (r, i);
             }
         }
+
     }
 
     CyclicCurve3::CyclicCurve3 (GLuint n, GLenum data_usage_flag)
     : LinearCombination3 (0.0, TWO_PI, 2 * n + 1, data_usage_flag), _n (n),
       _c_n (_CalculateNormalizingCoefficient (n)), _lambda_n (TWO_PI / (2 * n + 1))
     {
+
         _CalculateBinomialCoefficients (2 * _n, _bc);
     }
 
@@ -92,6 +95,7 @@ namespace cagd
             d[r] *= 2.0;
             d[r] /= (GLdouble) (2 * _n + 1);
             d[r] /= _bc (2 * _n, _n);
+
         }
         d[0] += centroid;
 

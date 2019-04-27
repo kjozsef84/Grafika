@@ -78,7 +78,6 @@ GLboolean GenericCurve3::RenderDerivatives(GLuint order, GLenum render_mode) con
 
     GLuint point_count = _derivative.GetColumnCount();
 
-
     glEnableClientState(GL_VERTEX_ARRAY);
         glBindBuffer(GL_ARRAY_BUFFER, _vbo_derivative(order));
             glVertexPointer(3, GL_FLOAT, 0, (const GLvoid *)0);

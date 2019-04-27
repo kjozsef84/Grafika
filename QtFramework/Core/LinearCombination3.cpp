@@ -102,35 +102,6 @@ GLboolean LinearCombination3::RenderData(GLenum render_mode) const
     return GL_TRUE;
 }
 
-GLboolean LinearCombination3::RenderDataColored(GLenum render_mode, GLuint nr) const
-{
-    if (!_vbo_data)
-        return GL_FALSE;
-
-    if (render_mode != GL_LINE_STRIP && render_mode != GL_LINE_LOOP && render_mode != GL_POINTS)
-        return GL_FALSE;
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo_data);
-            glVertexPointer(3, GL_FLOAT, 0, (const GLvoid*)0);
-            if(nr == 4)
-            {
-                glColor3f(1.0f, 1.0f, 0.0f);
-                glDrawArrays(render_mode, 1, 1);
-                glColor3f(0.0f, 0.0f, 1.0f);
-                glDrawArrays(render_mode, 2, 1);
-            }
-            glColor3f(1.0f, 0.0f, 0.0f);
-            glDrawArrays(render_mode, 0, 1);
-            glColor3f(0.0f, 1.0f, 0.0f);
-            glDrawArrays(render_mode, 3, 1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    return GL_TRUE;
-}
-
 
 GLboolean LinearCombination3::UpdateVertexBufferObjectsOfData(GLenum usage_flag)
 {
@@ -260,6 +231,7 @@ GenericCurve3* LinearCombination3::GenerateImage(GLuint max_order_of_derivatives
             delete result;
             return 0;
         }
+        // cout << result->_derivative.GetRowCount() << " " << d.GetRowCount() << endl;
         result->_derivative.SetColumn(i,d);
     }
     return result;

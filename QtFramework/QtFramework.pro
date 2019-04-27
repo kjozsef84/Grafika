@@ -57,7 +57,6 @@ HEADERS += \
     Core/DCoordinates3.h \
     Core/Exceptions.h \
     Core/GenericCurves3.h \
-    Core/Matrices.h \
     Core/RealSquareMatrices.h \
     GUI/GLWidget.h \
     GUI/MainWindow.h \
@@ -78,7 +77,9 @@ HEADERS += \
     Cyclic/CyclicCurve3.h \
     Cyclic/CyclicCurve3.h \
     Core/bicubicbsplinepatch.h \
-    Core/BicubicBSplinePatch.h
+    Core/BicubicBSplinePatch.h \
+    Core/Matrices.h \
+    Cyclic/mycycliccurve3.h
 
 SOURCES += \
     Core/GenericCurves3.cpp \
@@ -98,7 +99,8 @@ SOURCES += \
     Cyclic/CyclicCurve3.cpp \
     Cyclic/CyclicCurve3.cpp \
     Core/bicubicbsplinepatch.cpp \
-    Core/BicubicBSplinePatch.cpp
+    Core/BicubicBSplinePatch.cpp \
+    Cyclic/mycycliccurve3.cpp
 
 FORMS += \
     GUI/MainWindow.ui \

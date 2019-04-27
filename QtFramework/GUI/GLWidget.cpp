@@ -140,7 +140,7 @@ namespace cagd
 
 //------------------------------------------------------------------
 
-        homeworkNumber = 5;
+        homeworkNumber = 6;
 
 //------------------------------------------------------------------
         switch ( homeworkNumber ) {
@@ -159,6 +159,9 @@ namespace cagd
                 break;
             case 5:
                 initializeBicubicSpline();
+                break;
+            case 6:
+                initializeBicubicSplineArc3();
                 break;
         }
 
@@ -230,6 +233,9 @@ namespace cagd
                     break;
                 case 5:
                     renderBicubicSpline();
+                    break;
+                case 6:
+                    renderBicubicSplineArc3();
                     break;
             }
 
@@ -557,6 +563,8 @@ namespace cagd
     }
 
     void GLWidget::drawFirst(){
+        glDisable(GL_LIGHTING);
+
         glColor3f(1.0f,0.0f,0.0f);
             _img_pc[_ps_selected]->RenderDerivatives(0,GL_LINE_STRIP);
         glPointSize(5.0f);
@@ -685,13 +693,12 @@ namespace cagd
    }
 
     void GLWidget::initializeCyclicCurve(){
-        GLuint _n = 30;
+        GLuint _n = 3;
         _cyc3 = new CyclicCurve3(_n);
+
         if ( !_cyc3 ){
             throw ("Cannot create a generic curve");
         }
-        //_cyc3-> UpdateVertexBufferObjectsOfData();
-
         GLdouble step = TWO_PI/(2 * _n + 1);
         for(GLuint i = 0; i <= 2 * _n; i++)
         {
@@ -702,15 +709,30 @@ namespace cagd
             cp[2] = -2.0 + 4.0 * (GLdouble)rand() / (GLdouble)RAND_MAX;
         }
 
+
+        _cyc3-> UpdateVertexBufferObjectsOfData();
+
         _image_of_cyc3 = _cyc3->GenerateImage(2,400);
+
         if ( ! _image_of_cyc3 ){
             throw ("Cannot create the image of the generic curve");
         }
-       _image_of_cyc3 ->UpdateVertexBufferObjects();
+        if ( !_image_of_cyc3 ->UpdateVertexBufferObjects()) {
+            cout << " Error, cyclic curve, cannot update VBO s" << endl;
+        }
+
     }
     void GLWidget::renderCyclicCurve(){
-       glColor3f(0.0f,0.8f,0.0f);
-       _image_of_cyc3->RenderDerivatives(0,GL_POINTS);
+       glDisable(GL_LIGHTING);
+
+       glPointSize(10.0f);
+       glColor3f(1.0f,1.0f,0.0f);
+          // _cyc3->RenderData(GL_POINTS);
+           if ( !_image_of_cyc3->RenderDerivatives(0,GL_POINTS) ) {
+               cout << " Error, the cyclic curve can't be render " << endl;
+           }
+        glPointSize(1.0f);
+
        glColor3f(0.0f,0.8f,1.0f);
        _image_of_cyc3->RenderDerivatives(1,GL_LINES);
        glColor3f(1.0f,0.8f,1.0f);
@@ -829,5 +851,50 @@ namespace cagd
         glDisable(GL_LIGHTING);
     }
 
+
+    void GLWidget::initializeBicubicSplineArc3(){
+
+
+        GLdouble step = 10;
+        for(GLuint i = 0; i < 4; i++)
+        {
+            GLdouble u = i * step;
+            DCoordinate3 &cp = bsArc3[i];
+            cp[0] = cos(u);
+            cp[1] = sin(u);
+            cp[2] = -2.0 + 4.0 * (GLdouble)rand() / (GLdouble)RAND_MAX;
+        }
+
+
+        bsArc3.UpdateVertexBufferObjectsOfData();
+
+        _image_of_bsArc3 = bsArc3.GenerateImage(2,400);
+
+        if ( ! _image_of_bsArc3 ){
+            throw ("Cannot create the image of my generic curve");
+        }
+        if ( !_image_of_bsArc3 ->UpdateVertexBufferObjects()) {
+            cout << " Error, mycyclic curve, cannot update VBO s" << endl;
+        }
+
+    }
+    void GLWidget::renderBicubicSplineArc3(){
+        glDisable(GL_LIGHTING);
+
+        glPointSize(10.0f);
+        glColor3f(1.0f,0.0f,0.0f);
+           bsArc3.RenderData(GL_POINTS);
+            if ( !_image_of_bsArc3->RenderDerivatives(0,GL_LINE_STRIP) ) {
+                cout << " Error, the cyclic curve can't be render " << endl;
+            }
+         glPointSize(1.0f);
+/*
+        glColor3f(0.0f,0.8f,1.0f);
+        _image_of_bsArc3->RenderDerivatives(1,GL_LINES);
+        glColor3f(1.0f,0.8f,1.0f);
+        _image_of_bsArc3->RenderDerivatives(2,GL_LINES);
+        glPointSize(3.0f);
+*/
+    }
 }
 

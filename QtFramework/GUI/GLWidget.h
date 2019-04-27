@@ -15,6 +15,7 @@
 #include "../Parametric/ParametricSurfaces3.h"
 #include "../Cyclic/CyclicCurve3.h"
 #include "../Core/bicubicbsplinepatch.h"
+#include "../Cyclic/mycycliccurve3.h"
 
 namespace cagd
 {
@@ -69,6 +70,8 @@ namespace cagd
 
     CyclicCurve3* _cyc3;
     GenericCurve3* _image_of_cyc3;
+    bicubicSplineArc3 bsArc3;
+    GenericCurve3* _image_of_bsArc3;
 
 
 //------------      Lab4_2      ---------------
@@ -120,5 +123,7 @@ namespace cagd
         void renderCyclicCurve();
         void initializeBicubicSpline();
         void renderBicubicSpline();
+        void initializeBicubicSplineArc3();
+        void renderBicubicSplineArc3();
     };
 }

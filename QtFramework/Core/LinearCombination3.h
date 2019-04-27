@@ -50,7 +50,6 @@ namespace cagd
         // vbo handling methods
         virtual GLvoid DeleteVertexBufferObjectsOfData();
         virtual GLboolean RenderData(GLenum render_mode = GL_LINE_STRIP) const;
-        virtual GLboolean RenderDataColored(GLenum render_mode = GL_POINTS, GLuint nr = 2) const;
         virtual GLboolean UpdateVertexBufferObjectsOfData(GLenum usage_flag = GL_STATIC_DRAW);
 
         // get data by value
