@@ -13,6 +13,7 @@ namespace cagd
     class GenericCurve3
     {
         friend class LinearCombination3;
+        friend class TensorProductSurface;
 
         //----------------------------
         // input/output from/to stream

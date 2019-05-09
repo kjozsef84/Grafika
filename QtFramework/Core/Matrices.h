@@ -381,7 +381,6 @@ namespace cagd
     // get copy of an element
     template <typename T>
     T TriangularMatrix<T>::operator ()(GLuint row, GLuint column) const{
-        //if (((row < GetRowCount())) && ((column <= row))){
             assert(((row < _row_count)) && ((column <= row)));
         return _data[row][column];
 

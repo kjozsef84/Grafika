@@ -16,6 +16,8 @@
 #include "../Cyclic/CyclicCurve3.h"
 #include "../Core/bicubicbsplinepatch.h"
 #include "../Cyclic/mycycliccurve3.h"
+#include "../Cyclic/bicubicsplinemanager.h"
+#include "../Core/ShaderPrograms.h"
 
 namespace cagd
 {
@@ -56,10 +58,11 @@ namespace cagd
 //------------      Lab2    ----------------
 
         QTimer *_timer;
-        GLfloat _angle;
-        GLfloat _mangle;
+        GLfloat _angle = 0;
+        GLuint _mangle;
 
         TriangulatedMesh3 _animal;
+        ShaderProgram _shader;
 
         GLuint _ps_count;
         RowMatrix<ParametricSurface3 *> _ps;
@@ -70,8 +73,11 @@ namespace cagd
 
     CyclicCurve3* _cyc3;
     GenericCurve3* _image_of_cyc3;
-    bicubicSplineArc3 bsArc3;
-    GenericCurve3* _image_of_bsArc3;
+    BicubicSplineManager * manager;
+    GLuint _curve_number = 1;
+    GLuint _point_number = 1;
+    DCoordinate3 _points;
+    GLboolean _changeHappened = GL_FALSE;
 
 
 //------------      Lab4_2      ---------------
@@ -108,6 +114,12 @@ namespace cagd
         void set_trans_z(double value);
 
         void setParametricCurve( int index);
+        void signalManagement();
+        void setWhichCurve(int index);
+        void setWhichPoint(int index);
+        void setX(double);
+        void setY(double);
+        void setZ(double);
 
     private slots:
         void _rotateModel();

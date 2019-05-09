@@ -79,7 +79,9 @@ HEADERS += \
     Core/bicubicbsplinepatch.h \
     Core/BicubicBSplinePatch.h \
     Core/Matrices.h \
-    Cyclic/mycycliccurve3.h
+    Cyclic/mycycliccurve3.h \
+    Cyclic/bicubicsplinemanager.h \
+    Core/ShaderPrograms.h
 
 SOURCES += \
     Core/GenericCurves3.cpp \
@@ -100,13 +102,23 @@ SOURCES += \
     Cyclic/CyclicCurve3.cpp \
     Core/bicubicbsplinepatch.cpp \
     Core/BicubicBSplinePatch.cpp \
-    Cyclic/mycycliccurve3.cpp
+    Cyclic/mycycliccurve3.cpp \
+    Cyclic/bicubicsplinemanager.cpp \
+    Core/ShaderPrograms.cpp
 
 FORMS += \
     GUI/MainWindow.ui \
     GUI/SideWidget.ui
 
 DISTFILES += \
-    Models/elephant.off
+    Models/elephant.off \
+    Shaders/directional_light.frag \
+    Shaders/reflection_lines.frag \
+    Shaders/toon.frag \
+    Shaders/two_sided_lighting.frag \
+    Shaders/directional_light.vert \
+    Shaders/reflection_lines.vert \
+    Shaders/toon.vert \
+    Shaders/two_sided_lighting.vert
 
 

@@ -9,9 +9,52 @@ using namespace std;
 
 namespace cagd
 {
-    bicubicSplineArc3::bicubicSplineArc3 (GLenum data_usage_flag)
-        :  LinearCombination3 (0.0, 1.0, 4, data_usage_flag)
+    bicubicSplineArc3::bicubicSplineArc3 ( GLenum data_usage_flag)
+        : LinearCombination3 (0.0, 1.0, 4, data_usage_flag)
     {};
+
+    GLvoid bicubicSplineArc3::fillUpPoints() {
+
+        if ( !_is_closed ){
+
+            GLdouble step = 10;
+
+            for(GLuint i = 8; i < _point_count - 8; i++)
+            {
+                GLdouble u = ( i ) * step;
+                DCoordinate3 &cp = _data[i];
+                cp[0] = cos(u);
+                cp[1] = sin(u);
+                cp[2] = -2.0 + 4.0 * (GLdouble)rand() / (GLdouble)RAND_MAX;
+                cout << i << endl;
+            }
+
+            _data[7] = _data[10]; // 2
+            _data[6] = _data[9];  // 1
+            _data[5] = _data[8];  // 0
+            _data[4] = _data[8];
+
+
+            _data[3] = _data[9];
+            _data[2] = _data[8];
+            _data[1] = _data[8];
+            _data[0] = _data[8];
+
+
+            _data[_point_count - 8] = _data[_point_count - 11];
+            _data[_point_count - 7] = _data[_point_count - 10];
+            _data[_point_count - 6] = _data[_point_count - 9];
+            _data[_point_count - 5] = _data[_point_count - 9];
+
+            _data[_point_count - 4] = _data[_point_count - 10];
+            _data[_point_count - 3] = _data[_point_count - 9];
+            _data[_point_count - 2] = _data[_point_count - 9];
+            _data[_point_count - 1] = _data[_point_count - 9];
+
+        }
+
+    }
+
 
     GLboolean bicubicSplineArc3::BlendingFunctionValues(GLdouble u,
                          RowMatrix<GLdouble>& values) const {

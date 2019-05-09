@@ -581,25 +581,30 @@ namespace cagd
 
     void GLWidget::initializeAnimal(){
 
-
-        if ( _animal.LoadFromOFF("Models/elephant.off", true)){
+        glewInit();
+        if ( _animal.LoadFromOFF("./Models/elephant.off", true)){
             if(_animal.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)){
                 _mangle = 0.0;
                 _timer->start();
+                if( !_shader.InstallShaders("./Shaders/toon.vert", "./Shaders/toon.frag", GL_TRUE)){
+                    cout << "error while installing shader" << endl;
+                }
             }
+        } else {
+            cout << " cant find the animal OFF file " << endl;
         }
     }
     void GLWidget::drawAnimal(){
 
         glPushMatrix();
         glEnable(GL_LIGHTING);
-        glRotatef(_mangle, 1.0, 1.0, 1.0);
-        MatFBRuby.Apply();
-        _animal.Render();
+        // glRotatef(_mangle, 1.0, 1.0, 1.0);
+        _shader.Enable(GL_TRUE);
+            MatFBRuby.Apply();
+            _animal.Render();
+        _shader.Disable();
         glDisable(GL_LIGHTING);
         glPopMatrix();
-
-
 
     }
 
@@ -617,8 +622,6 @@ namespace cagd
                 *vertex += scale * (*normal);
             }
         }
-        //set_angle_x(_angle_x + 1);
-        //set_angle_y(_angle_y + 1);
         _animal.UnmapVertexBuffer();
         _animal.UnmapNormalBuffer();
 
@@ -853,48 +856,35 @@ namespace cagd
 
 
     void GLWidget::initializeBicubicSplineArc3(){
-
-
-        GLdouble step = 10;
-        for(GLuint i = 0; i < 4; i++)
-        {
-            GLdouble u = i * step;
-            DCoordinate3 &cp = bsArc3[i];
-            cp[0] = cos(u);
-            cp[1] = sin(u);
-            cp[2] = -2.0 + 4.0 * (GLdouble)rand() / (GLdouble)RAND_MAX;
-        }
-
-
-        bsArc3.UpdateVertexBufferObjectsOfData();
-
-        _image_of_bsArc3 = bsArc3.GenerateImage(2,400);
-
-        if ( ! _image_of_bsArc3 ){
-            throw ("Cannot create the image of my generic curve");
-        }
-        if ( !_image_of_bsArc3 ->UpdateVertexBufferObjects()) {
-            cout << " Error, mycyclic curve, cannot update VBO s" << endl;
-        }
-
+        manager = new BicubicSplineManager(10, GL_TRUE);
+        manager->FillMyGeometry();
+        _points[0] = _points[1] = _points[2] = 0;
     }
     void GLWidget::renderBicubicSplineArc3(){
-        glDisable(GL_LIGHTING);
+        manager->UpdateAndRender();
+    }
 
-        glPointSize(10.0f);
-        glColor3f(1.0f,0.0f,0.0f);
-           bsArc3.RenderData(GL_POINTS);
-            if ( !_image_of_bsArc3->RenderDerivatives(0,GL_LINE_STRIP) ) {
-                cout << " Error, the cyclic curve can't be render " << endl;
-            }
-         glPointSize(1.0f);
-/*
-        glColor3f(0.0f,0.8f,1.0f);
-        _image_of_bsArc3->RenderDerivatives(1,GL_LINES);
-        glColor3f(1.0f,0.8f,1.0f);
-        _image_of_bsArc3->RenderDerivatives(2,GL_LINES);
-        glPointSize(3.0f);
-*/
+    void GLWidget::setWhichCurve(int index){
+        _curve_number = index;
+    }
+
+    void GLWidget::setWhichPoint(int index){
+        _point_number = index;
+    }
+    void GLWidget::signalManagement() {
+        manager->ChangeControllPoint( _curve_number + _point_number - 2, _points);
+        updateGL();
+    }
+
+    void GLWidget::setX(double x) {
+        _points[0] = x;
+    }
+
+    void GLWidget::setY(double y) {
+        _points[1] = y;
+    }
+    void GLWidget::setZ(double z){
+        _points[2] = z;
     }
 }
 

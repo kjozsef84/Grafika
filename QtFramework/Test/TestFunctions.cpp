@@ -19,6 +19,7 @@ DCoordinate3 spiral_on_cone::d1(GLdouble u)
     return DCoordinate3(c - u * s, s + u * c, 1.0);
 }
 
+
 DCoordinate3 spiral_on_cone::d2(GLdouble u)
 {
     GLdouble c = cos(u), s = sin(u);
