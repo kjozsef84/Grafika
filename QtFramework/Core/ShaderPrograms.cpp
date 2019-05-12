@@ -166,7 +166,7 @@ GLboolean ShaderProgram::InstallShaders(const string &vertex_shader_file_name, c
 
     if (!vertex_shader_file || !vertex_shader_file.good())
     {
-       cout << " cant find the file " << endl;
+       cout << " cant find the shader file " << endl;
         return GL_FALSE;
     }
 

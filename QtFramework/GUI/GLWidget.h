@@ -77,7 +77,7 @@ namespace cagd
     GLuint _curve_number = 1;
     GLuint _point_number = 1;
     DCoordinate3 _points;
-    GLboolean _changeHappened = GL_FALSE;
+    GLboolean _open = GL_FALSE;
 
 
 //------------      Lab4_2      ---------------
@@ -120,6 +120,7 @@ namespace cagd
         void setX(double);
         void setY(double);
         void setZ(double);
+        void setIsOpen(bool);
 
     private slots:
         void _rotateModel();

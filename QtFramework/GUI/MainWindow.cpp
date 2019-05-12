@@ -51,11 +51,14 @@ namespace cagd
         connect(_side_widget->pcCombo, SIGNAL(currentIndexChanged(int)), _gl_widget, SLOT(setParametricCurve(int)));
 
         connect(_side_widget->button1, SIGNAL(clicked()), _gl_widget, SLOT(signalManagement()));
-        connect(_side_widget->pointSpinBox, SIGNAL(clicked()), _gl_widget, SLOT(setWhichPoint(int)));
+        connect(_side_widget->pointSpinBox, SIGNAL(valueChanged(int)), _gl_widget, SLOT(setWhichPoint(int)));
         connect(_side_widget->curveSpinBox, SIGNAL(valueChanged(int)), _gl_widget, SLOT(setWhichCurve(int)));
         connect(_side_widget->xDoubleSpinBox, SIGNAL(valueChanged(double)), _gl_widget, SLOT(setX(double)));
         connect(_side_widget->yDoubleSpinBox, SIGNAL(valueChanged(double)), _gl_widget, SLOT(setY(double)));
         connect(_side_widget->zDoubleSpinBox, SIGNAL(valueChanged(double)), _gl_widget, SLOT(setZ(double)));
+        connect(_side_widget->radioButtonOpeClosedCurve, SIGNAL(clicked(bool)), _gl_widget, SLOT(setIsOpen(bool)));
+
+
 
     }
 

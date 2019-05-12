@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>289</width>
-    <height>405</height>
+    <height>528</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,9 +29,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>0</y>
+     <y>10</y>
      <width>271</width>
-     <height>411</height>
+     <height>501</height>
     </rect>
    </property>
    <property name="title">
@@ -43,7 +43,7 @@
       <x>3</x>
       <y>21</y>
       <width>261</width>
-      <height>371</height>
+      <height>341</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -258,14 +258,27 @@
    <widget class="QPushButton" name="button1">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>360</y>
+      <x>170</x>
+      <y>365</y>
       <width>80</width>
       <height>25</height>
      </rect>
     </property>
     <property name="text">
      <string>Modify</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButtonOpeClosedCurve">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>370</y>
+      <width>141</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Open/Closed curve</string>
     </property>
    </widget>
   </widget>

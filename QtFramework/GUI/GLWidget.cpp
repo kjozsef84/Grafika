@@ -859,20 +859,25 @@ namespace cagd
         manager = new BicubicSplineManager(10, GL_TRUE);
         manager->FillMyGeometry();
         _points[0] = _points[1] = _points[2] = 0;
+        manager->Update();
     }
     void GLWidget::renderBicubicSplineArc3(){
-        manager->UpdateAndRender();
+        manager->Render();
     }
 
     void GLWidget::setWhichCurve(int index){
+        manager->setBackColor(_curve_number);
         _curve_number = index;
+        manager->highlightCurve( index );
+
+        updateGL();
     }
 
     void GLWidget::setWhichPoint(int index){
         _point_number = index;
     }
     void GLWidget::signalManagement() {
-        manager->ChangeControllPoint( _curve_number + _point_number - 2, _points);
+        manager->ChangeControllPoint( _curve_number , _point_number, _points);
         updateGL();
     }
 
@@ -885,6 +890,11 @@ namespace cagd
     }
     void GLWidget::setZ(double z){
         _points[2] = z;
+    }
+    void GLWidget::setIsOpen(bool open){
+        manager->setIsOpen(open);
+        manager->Update();
+        updateGL();
     }
 }
 
