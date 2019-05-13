@@ -140,7 +140,7 @@ namespace cagd
 
 //------------------------------------------------------------------
 
-        homeworkNumber = 6;
+        homeworkNumber = 2;
 
 //------------------------------------------------------------------
         switch ( homeworkNumber ) {
@@ -582,11 +582,11 @@ namespace cagd
     void GLWidget::initializeAnimal(){
 
         glewInit();
-        if ( _animal.LoadFromOFF("./Models/elephant.off", true)){
+        if ( _animal.LoadFromOFF("../Models/elephant.off", true)){
             if(_animal.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)){
                 _mangle = 0.0;
                 _timer->start();
-                if( !_shader.InstallShaders("./Shaders/toon.vert", "./Shaders/toon.frag", GL_TRUE)){
+                if( !_shader.InstallShaders("../Shaders/toon.vert", "../Shaders/toon.frag", GL_TRUE)){
                     cout << "error while installing shader" << endl;
                 }
             }

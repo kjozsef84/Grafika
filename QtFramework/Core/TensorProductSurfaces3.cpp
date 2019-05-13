@@ -415,20 +415,134 @@ GLboolean TensorProductSurface3::UpdateVertexBufferObjectsOfData(GLenum usage_fl
     return GL_TRUE;
 
 }
-/*
+
 // homework: generate u-directional isoparametric lines
-RowMatrix<GenericCurve3*>* GenerateUIsoparametricLines(GLuint iso_line_count,
+RowMatrix<GenericCurve3*>* TensorProductSurface3::GenerateUIsoparametricLines(GLuint iso_line_count,
                                                       GLuint maximum_order_of_derivatives,
                                                       GLuint div_point_count,
-                                                      GLenum usage_flag = GL_STATIC_DRAW) const;
+                                                       GLenum usage_flag) const {
 
+    if (div_point_count < 2 || iso_line_count < 2)
+    {
+                return nullptr;
+    }
+
+    RowMatrix<GenericCurve3*>* result = new RowMatrix<GenericCurve3*>(iso_line_count);
+    if (!result)
+    {
+        return nullptr;
+    }
+
+    GLdouble v_step = (_v_max - _v_min)/(iso_line_count - 1);
+    GLdouble u_step = (_u_max - _u_min)/(div_point_count - 1);
+
+    for (GLuint i = 0; i < iso_line_count; i++)
+        {
+            (*result)[i] = new GenericCurve3(maximum_order_of_derivatives, div_point_count, usage_flag);
+
+            if (!(*result)[i])
+            {
+                for (GLuint j = 0; j < i; j++)
+                {
+                    delete (*result)[j];
+                }
+                delete result, result = nullptr;
+                return result;
+            }
+
+            GLdouble v = min(_v_min + i*v_step, _v_max);
+
+            for (GLuint j = 0; j < div_point_count; j++)
+            {
+                PartialDerivatives pd;
+                GLdouble u = min(_u_min + j*u_step, _u_max);
+
+                if (!CalculatePartialDerivatives(maximum_order_of_derivatives, u, v, pd))
+                {
+                    for (GLuint k = 0; k < i; k++)
+                    {
+                        delete (*result)[k];
+                    }
+                    delete result, result = nullptr;
+                    return result;
+
+                }
+
+                for (GLuint r = 0; r<= maximum_order_of_derivatives; r++)
+                {
+                    (*(*result)[i])(r, j) = pd(r, 0);
+                }
+            }
+        }
+
+        return result;
+}
 // homework: generate v-directional isoparametric lines
-RowMatrix<GenericCurve3*>* GenerateVIsoparametricLines(GLuint iso_line_count,
+RowMatrix<GenericCurve3*>* TensorProductSurface3::GenerateVIsoparametricLines(GLuint iso_line_count,
                                                       GLuint maximum_order_of_derivatives,
                                                       GLuint div_point_count,
-                                                      GLenum usage_flag = GL_STATIC_DRAW) const;
+                                                       GLenum usage_flag) const {
 
-                                                      */
+
+    if (div_point_count < 2 || iso_line_count < 2)
+    {
+        return nullptr;
+    }
+
+    RowMatrix<GenericCurve3*>* result = new RowMatrix<GenericCurve3*>(iso_line_count);
+    if (!result)
+    {
+        return nullptr;
+    }
+
+    GLdouble u_step = (_u_max - _u_min)/(iso_line_count - 1);
+    GLdouble v_step = (_v_max - _v_min)/(div_point_count - 1);
+
+    for (GLuint i = 0; i < iso_line_count; i++)
+    {
+        (*result)[i] = new GenericCurve3(maximum_order_of_derivatives, div_point_count, usage_flag);
+
+        if (!(*result)[i])
+        {
+            for (GLuint j = 0; j < i; j++)
+            {
+                delete (*result)[j];
+            }
+            delete result, result = nullptr;
+            return result;
+        }
+
+        GLdouble u = min(_u_min + i*u_step, _u_max);
+
+        for (GLuint j = 0; j < div_point_count; j++)
+        {
+            PartialDerivatives pd;
+            GLdouble v = min(_v_min + j*v_step, _v_max);
+
+            if (!CalculatePartialDerivatives(maximum_order_of_derivatives, u, v, pd))
+            {
+
+                for (GLuint k = 0; k < i; k++)
+                {
+                    delete (*result)[k];
+                }
+                delete result, result = nullptr;
+                return result;
+
+            }
+
+            for (GLuint r = 0; r <= maximum_order_of_derivatives; r++)
+            {
+                (*(*result)[i])(r, j) = pd(r, r);
+            }
+        }
+    }
+
+    return result;
+
+}
+
+
 // homework: destructor
 TensorProductSurface3::~TensorProductSurface3(){
 
