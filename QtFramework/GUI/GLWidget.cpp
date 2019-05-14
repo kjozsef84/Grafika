@@ -143,7 +143,7 @@ GLWidget::initializeGL()
 
   //------------------------------------------------------------------
 
-  homeworkNumber = 6;
+  homeworkNumber = 5;
 
   //------------------------------------------------------------------
   switch (homeworkNumber) {
@@ -748,7 +748,34 @@ GLWidget::initializeCyclicCurve()
 
   _cyc3->UpdateVertexBufferObjectsOfData();
 
-  _image_of_cyc3 = _cyc3->GenerateImage(2, 400);
+  _image_of_cyc3 = _cyc3->GenerateImage(2, 100);
+
+  ColumnMatrix<GLdouble> _knot_vector(2 * _n + 1);
+  GLdouble myStep = TWO_PI / _n;
+  GLdouble pointValue = 0;
+
+  for (GLuint i = 0; i < 2 * _n + 1; i++) {
+    _knot_vector(i) = pointValue;
+    pointValue += step;
+  }
+
+  ColumnMatrix<DCoordinate3> _dataPointsToInterpolate(2 * _n + 1);
+
+  for (GLuint i = 0; i <= 2 * _n; i++) {
+    _dataPointsToInterpolate(i) = (*_cyc3)[i];
+  }
+  _cyc3->UpdateDataForInterpolation(_knot_vector, _dataPointsToInterpolate);
+
+  _image_of_cyc3_after = _cyc3->GenerateImage(2, 100);
+
+  if (!_image_of_cyc3_after) {
+    throw("Cannot create the image of the generic curve, after interpolation");
+  }
+
+  if (_image_of_cyc3_after->UpdateVertexBufferObjects()) {
+    cout << " Error, cyclic curve, cannot update VBO s, after interpolation"
+         << endl;
+  }
 
   if (!_image_of_cyc3) {
     throw("Cannot create the image of the generic curve");
@@ -764,10 +791,12 @@ GLWidget::renderCyclicCurve()
 
   glPointSize(10.0f);
   glColor3f(1.0f, 1.0f, 0.0f);
-  // _cyc3->RenderData(GL_POINTS);
+  _cyc3->RenderData(GL_POINTS);
   if (!_image_of_cyc3->RenderDerivatives(0, GL_POINTS)) {
     cout << " Error, the cyclic curve can't be render " << endl;
   }
+  glColor3f(1.0, 0.0, 0.0);
+  _image_of_cyc3_after->RenderDerivatives(0, GL_LINE_LOOP);
   glPointSize(1.0f);
 
   glColor3f(0.0f, 0.8f, 1.0f);
@@ -807,7 +836,6 @@ GLWidget::initializeBicubicSpline()
   _before_interpolation = _patch.GenerateImage(30, 30);
   if (_before_interpolation) {
     _before_interpolation->UpdateVertexBufferObjects();
-    // _before_interpolation->SaveToOFF("proba.off");
 
   } else {
     cout << "Error, the after interpolation is not created ";
@@ -904,6 +932,7 @@ GLWidget::renderBicubicSplineArc3()
 void
 GLWidget::setWhichCurve(int index)
 {
+
   manager->setBackColor(_curve_number);
   _curve_number = index;
   manager->highlightCurve(index);

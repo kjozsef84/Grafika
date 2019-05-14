@@ -351,7 +351,7 @@ GLvoid
 BicubicSplineManager::UpdateMyGeometry(GLuint index)
 {
   bsArcs3[index].UpdateVertexBufferObjectsOfData();
-  _image_of_bsArc3 = bsArcs3[index].GenerateImage(2, 400);
+  _image_of_bsArc3 = bsArcs3[index].GenerateImage(2, 20);
 
   if (!_image_of_bsArc3) {
     throw("Cannot create the image of my generic curve");
@@ -369,9 +369,23 @@ BicubicSplineManager::RenderMyGeometry(GLuint index)
   glPointSize(10.0f);
   glColor3f(1.0f, 0.0f, 0.0f);
   bsArcs3[index].RenderData(GL_POINTS);
+  glColor3f(0, 0, 1.0);
+  bsArcs3[index].RenderData(GL_LINE_STRIP);
   glColor3f(colors[index].r(), colors[index].g(), colors[index].b());
+
   if (!_image_of_bsArc3->RenderDerivatives(0, GL_LINE_STRIP)) {
     cout << " Error, the cyclic curve can't be render " << endl;
+  }
+  if (index == 5) {
+
+    glColor3f(0, 1, 0);
+    if (!_image_of_bsArc3->RenderDerivatives(1, GL_LINES)) {
+      cout << " Error, the cyclic curve can't be render " << endl;
+    }
+    glColor3f(0, 0, 1);
+    if (!_image_of_bsArc3->RenderDerivatives(2, GL_LINES)) {
+      cout << " Error, the cyclic curve can't be render " << endl;
+    }
   }
   glPointSize(1.0f);
 
@@ -390,5 +404,4 @@ BicubicSplineManager::highlightCurve(GLuint index)
   colors[index - 1].r() = 0.0;
   colors[index - 1].b() = 1.0;
 }
-
 }

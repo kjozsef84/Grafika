@@ -19,9 +19,9 @@ BicubicBSplinePatch::UBlendingFunctionValues(
   GLdouble w1 = 1 - u, w2 = w1 * w1, w3 = w1 * w2;
 
   blending_values(0) = w3 / 6.0;
-  blending_values(1) = (3 * u * w2 + 3 * w1 + 1) / 6;
-  blending_values(2) = (3 * u2 * w2 + 3 * u + 1) / 6;
-  blending_values(3) = u3 / 6;
+  blending_values(1) = (3 * u * w2 + 3 * w1 + 1) / 6.0;
+  blending_values(2) = (3 * u2 * w2 + 3 * u + 1) / 6.0;
+  blending_values(3) = u3 / 6.0;
 
   return GL_TRUE;
 }
@@ -40,9 +40,9 @@ BicubicBSplinePatch::VBlendingFunctionValues(
   GLdouble w1 = 1 - v, w2 = w1 * w1, w3 = w1 * w2;
 
   blending_values(0) = w3 / 6.0;
-  blending_values(1) = (3 * v * w2 + 3 * w1 + 1) / 6;
-  blending_values(2) = (3 * v2 * w2 + 3 * v + 1) / 6;
-  blending_values(3) = v3 / 6;
+  blending_values(1) = (3 * v * w2 + 3 * w1 + 1) / 6.0;
+  blending_values(2) = (3 * v2 * w2 + 3 * v + 1) / 6.0;
+  blending_values(3) = v3 / 6.0;
 
   return GL_TRUE;
 }
@@ -65,14 +65,14 @@ BicubicBSplinePatch::CalculatePartialDerivatives(
   GLdouble w1 = 1 - u, w2 = w1 * w1, w3 = w1 * w2;
 
   u_blending_values(0) = w3 / 6.0;
-  u_blending_values(1) = (3 * u * w2 + 3 * w1 + 1) / 6;
-  u_blending_values(2) = (3 * u2 * w2 + 3 * u + 1) / 6;
-  u_blending_values(3) = u3 / 6;
+  u_blending_values(1) = (3 * u * w2 + 3 * w1 + 1) / 6.0;
+  u_blending_values(2) = (3 * u2 * w1 + 3 * u + 1) / 6.0;
+  u_blending_values(3) = u3 / 6.0;
 
-  d1_u_blending_values(0) = w2 / -2;
-  d1_u_blending_values(1) = (w2 - 2 * u * w1 - 1) / 2;
-  d1_u_blending_values(2) = (2 * u * w1 - u2 + 1) / 2;
-  d1_u_blending_values(3) = u2 / 2;
+  d1_u_blending_values(0) = w2 / -2.0;
+  d1_u_blending_values(1) = (u * (3 * u - 4)) / 2.0;
+  d1_u_blending_values(2) = (3 * u2 - 2 * u - 1) / -2.0;
+  d1_u_blending_values(3) = u2 / 2.0;
 
   RowMatrix<GLdouble> v_blending_values(4), d1_v_blending_values(4);
 
@@ -82,14 +82,14 @@ BicubicBSplinePatch::CalculatePartialDerivatives(
   w3 = w1 * w2;
 
   v_blending_values(0) = w3 / 6.0;
-  v_blending_values(1) = (3 * v * w2 + 3 * w1 + 1) / 6;
-  v_blending_values(2) = (3 * v2 * w2 + 3 * v + 1) / 6;
-  v_blending_values(3) = v3 / 6;
+  v_blending_values(1) = (3 * v * w2 + 3 * w1 + 1) / 6.0;
+  v_blending_values(2) = (3 * v2 * w1 + 3 * v + 1) / 6.0;
+  v_blending_values(3) = v3 / 6.0;
 
-  d1_v_blending_values(0) = w2 / -2;
-  d1_v_blending_values(1) = (w2 - 2 * v * w1 - 1) / 2;
-  d1_v_blending_values(2) = (2 * v * w1 - v2 + 1) / 2;
-  d1_v_blending_values(3) = v2 / 2;
+  d1_v_blending_values(0) = w2 / -2.0;
+  d1_v_blending_values(1) = (v * (3 * v - 4)) / 2.0;
+  d1_v_blending_values(2) = (3 * v2 - 2 * v - 1) / -2.0;
+  d1_v_blending_values(3) = v2 / 2.0;
 
   pd.ResizeRows(2);
   pd.LoadNullVectors();

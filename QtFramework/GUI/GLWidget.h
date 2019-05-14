@@ -70,6 +70,7 @@ private:
 
   CyclicCurve3* _cyc3;
   GenericCurve3* _image_of_cyc3;
+  GenericCurve3* _image_of_cyc3_after;
   BicubicSplineManager* manager;
   GLuint _curve_number = 1;
   GLuint _point_number = 1;

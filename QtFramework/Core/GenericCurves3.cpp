@@ -134,7 +134,6 @@ GenericCurve3::UpdateVertexBufferObjects(GLdouble scale, GLenum usage_flag)
       return GL_FALSE;
     }
   }
-
   GLuint curve_point_count = _derivative.GetColumnCount();
 
   GLfloat* coordinate = 0;
