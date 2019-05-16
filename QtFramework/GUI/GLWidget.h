@@ -6,7 +6,7 @@
 #include "../Core/Materials.h"
 #include "../Core/ShaderPrograms.h"
 #include "../Core/TriangulatedMeshes3.h"
-#include "../Core/bicubicbsplinepatch.h"
+#include "../Core/patchmanager.h"
 #include "../Cyclic/CyclicCurve3.h"
 #include "../Cyclic/bicubicsplinemanager.h"
 #include "../Cyclic/mycycliccurve3.h"
@@ -81,6 +81,10 @@ private:
 
   BicubicBSplinePatch _patch;
   TriangulatedMesh3 *_before_interpolation, *_after_interpolation;
+  RowMatrix<GenericCurve3*>* uLines;
+
+  // ------------- Patches
+  patchManager _patchManager;
 
   //------------      Private Slots
 
@@ -137,5 +141,7 @@ private:
   void renderBicubicSpline();
   void initializeBicubicSplineArc3();
   void renderBicubicSplineArc3();
+  GLvoid initializePatchManager();
+  GLvoid renderPatchManager();
 };
 }

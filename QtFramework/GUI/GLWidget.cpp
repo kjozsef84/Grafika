@@ -143,7 +143,7 @@ GLWidget::initializeGL()
 
   //------------------------------------------------------------------
 
-  homeworkNumber = 5;
+  homeworkNumber = 1;
 
   //------------------------------------------------------------------
   switch (homeworkNumber) {
@@ -165,6 +165,9 @@ GLWidget::initializeGL()
       break;
     case 6:
       initializeBicubicSplineArc3();
+      break;
+    case 7:
+      initializePatchManager();
       break;
   }
 
@@ -236,6 +239,9 @@ GLWidget::paintGL()
       break;
     case 6:
       renderBicubicSplineArc3();
+      break;
+    case 7:
+      renderPatchManager();
       break;
   }
 
@@ -872,6 +878,17 @@ GLWidget::initializeBicubicSpline()
       cout << "Error, the after interpolation is not created ";
     }
   }
+
+  // -------------------    generate isoparametric lines ?
+  /*
+    uLines = _patch.GenerateVIsoparametricLines(4, 2, 100);
+
+    for (GLuint i = 0; i < 4; i++) {
+      if (!(*uLines)[i]->UpdateVertexBufferObjects()) {
+        cout << " hiba " << endl;
+      }
+    }
+  */
 }
 
 GLvoid
@@ -888,23 +905,20 @@ GLWidget::renderBicubicSpline()
   } else {
     cout << " Error, before interpolation" << endl;
   }
-  /*
-  if ( _after_interpolation )
-  {
 
-      glEnable(GL_BLEND);
-      glDepthMask(GL_FALSE);
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-          MatFBTurquoise.Apply();
-          if ( !_after_interpolation ->Render() )
-              cout << "Error, can't render the after interpolation " << endl;
-      glDepthMask(GL_TRUE);
-      glDisable(GL_BLEND);
+  if (_after_interpolation) {
+
+    glEnable(GL_BLEND);
+    glDepthMask(GL_FALSE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    MatFBTurquoise.Apply();
+    if (!_after_interpolation->Render())
+      cout << "Error, can't render the after interpolation " << endl;
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
+  } else {
+    cout << " Error, after interpolation " << endl;
   }
-  else {
-      cout << " Error, after interpolation " << endl;
-  }
-  */
 
   glPointSize(5.0f);
   if (!_after_interpolation->Render(GL_POINTS))
@@ -977,4 +991,18 @@ GLWidget::setIsOpen(bool open)
   manager->Update();
   updateGL();
 }
+
+GLvoid
+GLWidget::initializePatchManager()
+{
+  _patchManager.setContolPoints(_patch);
+  _patchManager.generateImages();
+}
+
+GLvoid
+GLWidget::renderPatchManager()
+{
+  _patchManager.generateImages();
+}
+
 }

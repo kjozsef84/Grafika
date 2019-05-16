@@ -117,7 +117,6 @@ GenericCurve3::UpdateVertexBufferObjects(GLdouble scale, GLenum usage_flag)
       usage_flag != GL_STATIC_DRAW && usage_flag != GL_STATIC_READ &&
       usage_flag != GL_STATIC_COPY)
     return GL_FALSE;
-
   DeleteVertexBufferObjects();
 
   _usage_flag = usage_flag;
