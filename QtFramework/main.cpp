@@ -1,27 +1,28 @@
-#include <QApplication>
 #include "GUI/MainWindow.h"
+#include <QApplication>
 
 using namespace cagd;
 
-
-int main(int argc, char **argv)
+int
+main(int argc, char** argv)
 {
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
-    std::cout << " szia";
-    // creating an application object and setting one of its attributes
-    QApplication app(argc, argv);
 
-    // if you have installed a different version of Qt, it may happen that
-    // the application attribute Qt::AA_UseDesktopOpenGL is not recognized
-    // on Windows its existence is critical for our applications
-    // on Linux or Mac you can uncomment this line
-    app.setAttribute(Qt::AA_UseDesktopOpenGL, true);
+  QApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
+  std::cout << " szia";
+  // creating an application object and setting one of its attributes
+  QApplication app(argc, argv);
 
-    // creating a main window object
-    MainWindow mwnd;
+  // if you have installed a different version of Qt, it may happen that
+  // the application attribute Qt::AA_UseDesktopOpenGL is not recognized
+  // on Windows its existence is critical for our applications
+  // on Linux or Mac you can uncomment this line
+  app.setAttribute(Qt::AA_UseDesktopOpenGL, true);
 
-    mwnd.showMaximized();
+  // creating a main window object
+  MainWindow mwnd;
 
-    // running the application
-    return app.exec();
+  mwnd.showMaximized();
+
+  // running the application
+  return app.exec();
 }

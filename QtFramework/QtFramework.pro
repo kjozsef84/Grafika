@@ -57,7 +57,6 @@ HEADERS += \
     Core/DCoordinates3.h \
     Core/Exceptions.h \
     Core/GenericCurves3.h \
-    Core/Matrices.h \
     Core/RealSquareMatrices.h \
     GUI/GLWidget.h \
     GUI/MainWindow.h \
@@ -72,7 +71,17 @@ HEADERS += \
     Core/TriangularFaces.h \
     Core/TCoordinates4.h \
     Core/HCoordinates3.h \
-    Parametric/ParametricSurfaces3.h
+    Parametric/ParametricSurfaces3.h \
+    Core/LinearCombination3.h \
+    Core/TensorProductSurfaces3.h \
+    Cyclic/CyclicCurve3.h \
+    Cyclic/CyclicCurve3.h \
+    Core/bicubicbsplinepatch.h \
+    Core/BicubicBSplinePatch.h \
+    Core/Matrices.h \
+    Cyclic/mycycliccurve3.h \
+    Cyclic/bicubicsplinemanager.h \
+    Core/ShaderPrograms.h
 
 SOURCES += \
     Core/GenericCurves3.cpp \
@@ -86,13 +95,30 @@ SOURCES += \
     Core/Materials.cpp \
     Core/Lights.cpp \
     Core/TriangulatedMeshes3.cpp \
-    Parametric/ParametricSurfaces3.cpp
+    Parametric/ParametricSurfaces3.cpp \
+    Core/LinearCombination3.cpp \
+    Core/TensorProductSurfaces3.cpp \
+    Cyclic/CyclicCurve3.cpp \
+    Cyclic/CyclicCurve3.cpp \
+    Core/bicubicbsplinepatch.cpp \
+    Core/BicubicBSplinePatch.cpp \
+    Cyclic/mycycliccurve3.cpp \
+    Cyclic/bicubicsplinemanager.cpp \
+    Core/ShaderPrograms.cpp
 
 FORMS += \
     GUI/MainWindow.ui \
     GUI/SideWidget.ui
 
 DISTFILES += \
-    Models/elephant.off
+    Models/elephant.off \
+    Shaders/directional_light.frag \
+    Shaders/reflection_lines.frag \
+    Shaders/toon.frag \
+    Shaders/two_sided_lighting.frag \
+    Shaders/directional_light.vert \
+    Shaders/reflection_lines.vert \
+    Shaders/toon.vert \
+    Shaders/two_sided_lighting.vert
 
 
