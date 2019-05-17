@@ -62,6 +62,9 @@ private:
   TriangulatedMesh3 _animal;
   ShaderProgram _shader;
 
+  RowMatrix<ShaderProgram> _shaders;
+  GLint _selectedShader = 0;
+
   GLuint _ps_count;
   RowMatrix<ParametricSurface3*> _ps;
   RowMatrix<TriangulatedMesh3*> _img_ps;
@@ -128,6 +131,7 @@ public slots:
   void setY(double);
   void setZ(double);
   void setIsOpen(bool);
+  void setShaderNumber(int);
 
 private slots:
   void _rotateModel();
@@ -150,5 +154,6 @@ private:
   GLvoid setPatchData();
   GLvoid initializeControlNet();
   GLvoid renderControlNet();
+  GLvoid initShader();
 };
 }

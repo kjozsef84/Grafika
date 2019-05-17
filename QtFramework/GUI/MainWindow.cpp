@@ -103,6 +103,11 @@ MainWindow::MainWindow(QWidget* parent)
           SIGNAL(clicked(bool)),
           _gl_widget,
           SLOT(setIsOpen(bool)));
+
+  connect(_side_widget->cbShader,
+          SIGNAL(currentIndexChanged(int)),
+          _gl_widget,
+          SLOT(setShaderNumber(int)));
 }
 
 //--------------------------------
