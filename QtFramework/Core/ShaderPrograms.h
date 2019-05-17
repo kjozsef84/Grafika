@@ -105,6 +105,51 @@ public:
                                    GLboolean logging_is_enabled = GL_FALSE,
                                    std::ostream& output = std::cout) const;
 
+  GLboolean SetUniformVariableMatrix2fv(const GLchar* name,
+                                        GLsizei count,
+                                        GLboolean transpose,
+                                        const GLfloat* value);
+
+  GLboolean SetUniformVariableMatrix3fv(const GLchar* name,
+                                        GLsizei count,
+                                        GLboolean transpose,
+                                        const GLfloat* value);
+
+  GLboolean SetUniformVariableMatrix4fv(const GLchar* name,
+                                        GLsizei count,
+                                        GLboolean transpose,
+                                        const GLfloat* value);
+
+  GLboolean SetUniformVariableMatrix2x3fv(const GLchar* name,
+                                          GLsizei count,
+                                          GLboolean transpose,
+                                          const GLfloat* value);
+
+  GLboolean SetUniformVariableMatrix3x2fv(const GLchar* name,
+                                          GLsizei count,
+                                          GLboolean transpose,
+                                          const GLfloat* value);
+
+  GLboolean SetUniformVariableMatrix2x4fv(const GLchar* name,
+                                          GLsizei count,
+                                          GLboolean transpose,
+                                          const GLfloat* value);
+
+  GLboolean SetUniformVariableMatrix4x2fv(const GLchar* name,
+                                          GLsizei count,
+                                          GLboolean transpose,
+                                          const GLfloat* value);
+
+  GLboolean SetUniformVariableMatrix3x4fv(const GLchar* name,
+                                          GLsizei count,
+                                          GLboolean transpose,
+                                          const GLfloat* value);
+
+  GLboolean SetUniformVariableMatrix4x3fv(const GLchar* name,
+                                          GLsizei count,
+                                          GLboolean transpose,
+                                          const GLfloat* value);
+
   GLvoid Disable() const;
   GLvoid Enable(GLboolean logging_is_enabled = GL_FALSE,
                 std::ostream& output = std::cout) const;
