@@ -81,7 +81,8 @@ HEADERS += \
     Core/Matrices.h \
     Cyclic/mycycliccurve3.h \
     Cyclic/bicubicsplinemanager.h \
-    Core/ShaderPrograms.h
+    Core/ShaderPrograms.h \
+    Core/mypatchmanager.h
 
 SOURCES += \
     Core/GenericCurves3.cpp \
@@ -104,7 +105,8 @@ SOURCES += \
     Core/BicubicBSplinePatch.cpp \
     Cyclic/mycycliccurve3.cpp \
     Cyclic/bicubicsplinemanager.cpp \
-    Core/ShaderPrograms.cpp
+    Core/ShaderPrograms.cpp \
+    Core/mypatchmanager.cpp
 
 FORMS += \
     GUI/MainWindow.ui \

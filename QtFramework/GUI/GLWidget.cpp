@@ -143,7 +143,7 @@ GLWidget::initializeGL()
 
   //------------------------------------------------------------------
 
-  homeworkNumber = 5;
+  homeworkNumber = 2;
 
   //------------------------------------------------------------------
   switch (homeworkNumber) {
@@ -165,6 +165,9 @@ GLWidget::initializeGL()
       break;
     case 6:
       initializeBicubicSplineArc3();
+      break;
+    case 7:
+      initializePatchManager();
       break;
   }
 
@@ -236,6 +239,9 @@ GLWidget::paintGL()
       break;
     case 6:
       renderBicubicSplineArc3();
+      break;
+    case 7:
+      renderPatchManager();
       break;
   }
 
@@ -812,26 +818,7 @@ GLWidget::initializeBicubicSpline()
 
   glewInit();
 
-  _patch.SetData(0, 0, -2, -2, 0);
-  _patch.SetData(0, 1, -2, -1, 0);
-  _patch.SetData(0, 2, -2, 1, 0);
-  _patch.SetData(0, 3, -2, 2, 0);
-
-  _patch.SetData(1, 0, -1, -2, 0);
-  _patch.SetData(1, 1, -1, -1, 2);
-  _patch.SetData(1, 2, -1, 1, 2);
-  _patch.SetData(1, 3, -1, 2, 0);
-
-  _patch.SetData(2, 0, 1, -2, 0);
-  _patch.SetData(2, 1, 1, -1, 2);
-  _patch.SetData(2, 2, 1, 1, 2);
-  _patch.SetData(2, 3, 1, 2, 0);
-
-  _patch.SetData(3, 0, 2, -2, 0);
-  _patch.SetData(3, 1, 2, -1, 0);
-  _patch.SetData(3, 2, 2, 1, 0);
-  _patch.SetData(3, 3, 2, 2, 0);
-
+  setPatchData();
   _patch.UpdateVertexBufferObjectsOfData();
   _before_interpolation = _patch.GenerateImage(30, 30);
   if (_before_interpolation) {
@@ -872,8 +859,25 @@ GLWidget::initializeBicubicSpline()
       cout << "Error, the after interpolation is not created ";
     }
   }
-}
 
+  if (uLines) {
+    uLines = _patch.GenerateUIsoparametricLines(_ulineCount, 1, 30);
+    for (GLuint i = 0; i < _vlineCount; i++) {
+      if ((*uLines)[i]) {
+        (*uLines)[i]->UpdateVertexBufferObjects(0.2);
+      }
+    }
+  }
+
+  if (vLines) {
+    vLines = _patch.GenerateVIsoparametricLines(_vlineCount, 1, 30);
+    for (GLuint i = 0; i < _vlineCount; i++) {
+      if ((*vLines)[i]) {
+        (*vLines)[i]->UpdateVertexBufferObjects(0.2);
+      }
+    }
+  }
+}
 GLvoid
 GLWidget::renderBicubicSpline()
 {
@@ -897,15 +901,34 @@ GLWidget::renderBicubicSpline()
       glBlendFunc(GL_SRC_ALPHA, GL_ONE);
           MatFBTurquoise.Apply();
           if ( !_after_interpolation ->Render() )
-              cout << "Error, can't render the after interpolation " << endl;
-      glDepthMask(GL_TRUE);
-      glDisable(GL_BLEND);
+              cout << "Error, can't render the after interpolation " <<
+  endl; glDepthMask(GL_TRUE); glDisable(GL_BLEND);
   }
   else {
       cout << " Error, after interpolation " << endl;
   }
   */
 
+  glDisable(GL_LIGHTING);
+  glColor3f(0.0, 1.0, 0.0);
+  for (GLuint i = 0; i < _ulineCount; i++) {
+    if (!(*uLines)[i]->RenderDerivatives(0, GL_LINE_STRIP)) {
+      cout << " hiba " << endl;
+    } else {
+      (*uLines)[i]->RenderDerivatives(1, GL_LINES);
+    }
+  }
+
+  glColor3f(0.0, 0.0, 1.0);
+  for (GLuint i = 0; i < _vlineCount; i++) {
+    if (!(*vLines)[i]->RenderDerivatives(0, GL_LINE_STRIP)) {
+      cout << " hiba " << endl;
+    } else {
+      (*vLines)[i]->RenderDerivatives(1, GL_LINES);
+    }
+  }
+
+  glEnable(GL_LIGHTING);
   glPointSize(5.0f);
   if (!_after_interpolation->Render(GL_POINTS))
     cout << "Error, can't render the after interpolation " << endl;
@@ -977,4 +1000,93 @@ GLWidget::setIsOpen(bool open)
   manager->Update();
   updateGL();
 }
+GLvoid
+GLWidget::initializePatchManager()
+{
+  _patchManager = new myPatchManager();
+  setPatchData();
+  _patchManager->getData(_patch);
+  _patchManager->setContolPoints();
+  _patchManager->generateImages();
+  initializeControlNet();
+}
+
+GLvoid
+GLWidget::renderPatchManager()
+{
+
+  renderControlNet();
+  _patchManager->renderImages();
+}
+GLvoid
+GLWidget::setPatchData()
+{
+
+  _patch.SetData(0, 0, -2, -2, 0);
+  _patch.SetData(0, 1, -2, -1, 0);
+  _patch.SetData(0, 2, -2, 1, 0);
+  _patch.SetData(0, 3, -2, 2, 0);
+
+  _patch.SetData(1, 0, -1, -2, 0);
+  _patch.SetData(1, 1, -1, -1, 2);
+  _patch.SetData(1, 2, -1, 1, 2);
+  _patch.SetData(1, 3, -1, 2, 0);
+
+  _patch.SetData(2, 0, 1, -2, 0);
+  _patch.SetData(2, 1, 1, -1, 2);
+  _patch.SetData(2, 2, 1, 1, 2);
+  _patch.SetData(2, 3, 1, 2, 0);
+
+  _patch.SetData(3, 0, 2, -2, 0);
+  _patch.SetData(3, 1, 2, -1, 0);
+  _patch.SetData(3, 2, 2, 1, 0);
+  _patch.SetData(3, 3, 2, 2, 0);
+}
+GLvoid
+GLWidget::initializeControlNet()
+{
+  RowMatrix<GLdouble> u_knot_vector(4);
+  u_knot_vector(0) = 0.0;
+  u_knot_vector(1) = 1.0 / 3.0;
+  u_knot_vector(2) = 2.0 / 3.0;
+  u_knot_vector(3) = 1.0;
+
+  ColumnMatrix<GLdouble> v_knot_vector(4);
+  v_knot_vector(0) = 0.0;
+  v_knot_vector(1) = 1.0 / 3.0;
+  v_knot_vector(2) = 2.0 / 3.0;
+  v_knot_vector(3) = 1.0;
+
+  Matrix<DCoordinate3> data_points_to_interpolate(4, 4);
+  for (GLuint row = 0; row < 4; row++) {
+    for (GLuint column = 0; column < 4; column++)
+      _patch.GetData(row, column, data_points_to_interpolate(row, column));
+  }
+
+  if (_patch.UpdateDataForInterpolation(
+        u_knot_vector, v_knot_vector, data_points_to_interpolate)) {
+    _after_interpolation = _patch.GenerateImage(30, 30);
+    if (_after_interpolation) {
+      if (!_after_interpolation->UpdateVertexBufferObjects()) {
+        cout << " Error, the after interpolation vertexBufferObject was "
+                "unsuccesfull"
+             << endl;
+      }
+    } else {
+      cout << "Error, the after interpolation is not created ";
+    }
+  }
+}
+GLvoid
+GLWidget::renderControlNet()
+{
+  glDisable(GL_LIGHTING);
+  glPointSize(5.0f);
+  glColor3f(1.0, 0.0, 0.0);
+  if (!_after_interpolation->Render(GL_POINTS))
+    cout << "Error, can't render the after interpolation " << endl;
+  glPointSize(1.0f);
+  glEnable(GL_LIGHTING);
+}
+
 }
