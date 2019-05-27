@@ -153,6 +153,7 @@ GLWidget::initializeGL()
     case 2:
       // glewInit();
       initializeAnimal();
+      initShader();
       break;
     case 3:
       initalizeSurface();
@@ -598,10 +599,6 @@ GLWidget::initializeAnimal()
     if (_animal.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)) {
       _mangle = 0.0;
       _timer->start();
-      if (!_shader.InstallShaders(
-            "../Shaders/toon.vert", "../Shaders/toon.frag", GL_TRUE)) {
-        cout << "error while installing shader" << endl;
-      }
     }
   } else {
     cout << " cant find the animal OFF file " << endl;
@@ -614,10 +611,10 @@ GLWidget::drawAnimal()
   glPushMatrix();
   glEnable(GL_LIGHTING);
   // glRotatef(_mangle, 1.0, 1.0, 1.0);
-  _shader.Enable(GL_TRUE);
+  _shaders[_selectedShader].Enable();
   MatFBRuby.Apply();
   _animal.Render();
-  _shader.Disable();
+  _shaders[_selectedShader].Disable();
   glDisable(GL_LIGHTING);
   glPopMatrix();
 }
@@ -1089,4 +1086,53 @@ GLWidget::renderControlNet()
   glEnable(GL_LIGHTING);
 }
 
+void
+GLWidget::initShader()
+{
+  _selectedShader = 2;
+  _shaders.ResizeColumns(4);
+
+  try {
+    if (!_shaders[0].InstallShaders("../Shaders/directional_light.vert",
+                                    "../Shaders/directional_light.frag")) {
+      throw Exception("Directional light failed to load.");
+    }
+
+    if (!_shaders[1].InstallShaders("../Shaders/reflection_lines.vert",
+                                    "../Shaders/reflection_lines.frag")) {
+      throw Exception("Reflection lines failed to load.");
+    } else {
+      _shaders[1].Enable();
+      _shaders[1].SetUniformVariable1f("scale_factor", 4.0f);
+      _shaders[1].SetUniformVariable1f("smoothing", 2.0f);
+      _shaders[1].SetUniformVariable1f("shading", 1.0f);
+      _shaders[1].Disable();
+    }
+
+    if (!_shaders[2].InstallShaders("../Shaders/toon.vert",
+                                    "../Shaders/toon.frag")) {
+      throw Exception("Toon failed to load.");
+    }
+    {
+      _shaders[2].Enable();
+      _shaders[2].SetUniformVariable4f(
+        "default_outline_color", 1.0f, 1.0f, 1.0f, 1.0f);
+      _shaders[2].Disable();
+    }
+
+    if (!_shaders[3].InstallShaders("../Shaders/two_sided_lighting.vert",
+                                    "../Shaders/two_sided_lighting.frag")) {
+      throw Exception("Two sided lighting failed to load.");
+    }
+  } catch (Exception& e) {
+    cerr << e << endl;
+  }
+}
+
+void
+GLWidget::setShaderNumber(int index)
+{
+  _selectedShader = index;
+  updateGL();
+}
 }
