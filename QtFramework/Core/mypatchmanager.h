@@ -11,7 +11,7 @@ namespace cagd {
 
 class myPatchManager
 {
-private:
+protected:
   Matrix<DCoordinate3> _net;
   GLuint _size = 4;
   Matrix<BicubicBSplinePatch> patches;
@@ -29,5 +29,6 @@ public:
   GLint getPointCountU();
   GLint getPointCountV();
   GLvoid changeControllPoint(int, int, DCoordinate3);
+  GLvoid setControlPoint(int, int, DCoordinate3);
 };
 }

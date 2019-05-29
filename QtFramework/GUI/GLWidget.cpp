@@ -143,7 +143,7 @@ GLWidget::initializeGL()
 
   //------------------------------------------------------------------
 
-  homeworkNumber = 7;
+  homeworkNumber = 8;
 
   //------------------------------------------------------------------
   switch (homeworkNumber) {
@@ -169,6 +169,9 @@ GLWidget::initializeGL()
       break;
     case 7:
       initializePatchManager();
+      break;
+    case 8:
+      initializeMyPatch();
       break;
   }
 
@@ -243,6 +246,9 @@ GLWidget::paintGL()
       break;
     case 7:
       renderPatchManager();
+      break;
+    case 8:
+      renderMyPatch();
       break;
   }
 
@@ -1231,6 +1237,20 @@ void
 GLWidget::setPatchZ(double z)
 {
   patchPoint[2] = z;
+}
+
+GLvoid
+GLWidget::initializeMyPatch()
+{
+  myOriginalPatch = new originalPatch(20, 20);
+  myOriginalPatch->setContolPoints();
+  myOriginalPatch->generateImage();
+}
+GLvoid
+GLWidget::renderMyPatch()
+{
+  myOriginalPatch->renderControlPoints();
+  myOriginalPatch->renderImages();
 }
 
 }

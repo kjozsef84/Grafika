@@ -247,8 +247,8 @@ GLvoid
 myPatchManager::renderControlPoints()
 {
   glDisable(GL_LIGHTING);
-  glPointSize(11);
-  glColor3f(1, 0, 0);
+  glPointSize(7);
+  glColor3f(1, 0, 1);
   glBegin(GL_POINTS);
   for (GLuint i = 0; i < _net.GetRowCount(); i++) {
     for (GLuint j = 0; j < _net.GetColumnCount(); j++) {
@@ -427,4 +427,11 @@ myPatchManager::changeControllPoint(int whichRow,
     _imageOfPatches(n, 0)->UpdateVertexBufferObjects();
   }
 }
+
+GLvoid
+myPatchManager::setControlPoint(int i, int j, DCoordinate3 point)
+{
+  _net(i, j) = point;
+}
+
 }
