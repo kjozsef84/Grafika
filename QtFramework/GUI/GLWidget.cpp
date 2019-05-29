@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "GLWidget.h"
 #include <gl/GLU.h>
 
@@ -143,7 +143,7 @@ GLWidget::initializeGL()
 
   //------------------------------------------------------------------
 
-  homeworkNumber = 2;
+  homeworkNumber = 7;
 
   //------------------------------------------------------------------
   switch (homeworkNumber) {
@@ -513,7 +513,6 @@ void
 GLWidget::setParametricCurve(int index)
 {
   this->_ps_selected = index;
-  // cout << index << endl;
   updateGL();
 }
 void
@@ -595,7 +594,7 @@ GLWidget::initializeAnimal()
 {
 
   glewInit();
-  if (_animal.LoadFromOFF("../Models/elephant.off", true)) {
+  if (_animal.LoadFromOFF("../Models/sphere.off", true)) {
     if (_animal.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)) {
       _mangle = 0.0;
       _timer->start();
@@ -938,7 +937,7 @@ GLWidget::renderBicubicSpline()
 void
 GLWidget::initializeBicubicSplineArc3()
 {
-  manager = new BicubicSplineManager(10, GL_TRUE);
+  manager = new BicubicSplineManager(10, _open);
   manager->FillMyGeometry();
   _points[0] = _points[1] = _points[2] = 0;
   manager->Update();
@@ -946,29 +945,46 @@ GLWidget::initializeBicubicSplineArc3()
 void
 GLWidget::renderBicubicSplineArc3()
 {
+  glDisable(GL_LIGHTING);
+  glPointSize(10.0);
+  glBegin(GL_POINTS);
+  if (_open && _point_number <= manager->getPointNumber()) {
+    DCoordinate3 newPoint = manager->getPoint(_point_number);
+    glColor3f(0.0f, 1.0f, 1.0f);
+    glVertex3f(newPoint.x(), newPoint.y(), newPoint.z());
+  } else if (!_open && _point_number <= manager->getPointNumber()) {
+    DCoordinate3 newPoint = manager->getPoint(_point_number);
+    glColor3f(0.0f, 1.0f, 1.0f);
+    glVertex3f(newPoint.x(), newPoint.y(), newPoint.z());
+  }
+  glEnd();
+  glEnable(GL_LIGHTING);
   manager->Render();
 }
 
 void
 GLWidget::setWhichCurve(int index)
 {
-
-  manager->setBackColor(_curve_number);
-  _curve_number = index;
-  manager->highlightCurve(index);
-
-  updateGL();
+  if (index <= manager->getPointNumber() + 2) {
+    manager->setBackColor(_curve_number);
+    _curve_number = index;
+    manager->highlightCurve(index);
+    setPoints();
+    updateGL();
+  }
 }
 
 void
 GLWidget::setWhichPoint(int index)
 {
   _point_number = index;
+  setPoints();
+  updateGL();
 }
 void
 GLWidget::signalManagement()
 {
-  manager->ChangeControllPoint(_curve_number, _point_number, _points);
+  manager->ChangeControllPoint(_point_number, _points);
   updateGL();
 }
 
@@ -1000,19 +1016,15 @@ GLWidget::setIsOpen(bool open)
 GLvoid
 GLWidget::initializePatchManager()
 {
-  _patchManager = new myPatchManager();
-  setPatchData();
-  _patchManager->getData(_patch);
-  _patchManager->setContolPoints();
-  _patchManager->generateImages();
-  initializeControlNet();
+  _patchManager = new myPatchManager(10, 10);
+  _patchManager->generateImage();
 }
 
 GLvoid
 GLWidget::renderPatchManager()
 {
-
-  renderControlNet();
+  paintPoint(_patchManager->getPoint(uIndex, vIndex));
+  _patchManager->renderControlPoints();
   _patchManager->renderImages();
 }
 GLvoid
@@ -1042,6 +1054,7 @@ GLWidget::setPatchData()
 GLvoid
 GLWidget::initializeControlNet()
 {
+
   RowMatrix<GLdouble> u_knot_vector(4);
   u_knot_vector(0) = 0.0;
   u_knot_vector(1) = 1.0 / 3.0;
@@ -1072,6 +1085,9 @@ GLWidget::initializeControlNet()
     } else {
       cout << "Error, the after interpolation is not created ";
     }
+    if (!_patch.UpdateVertexBufferObjectsOfData()) {
+      cout << "error, cant update patch VBO " << endl;
+    }
   }
 }
 GLvoid
@@ -1082,6 +1098,8 @@ GLWidget::renderControlNet()
   glColor3f(1.0, 0.0, 0.0);
   if (!_after_interpolation->Render(GL_POINTS))
     cout << "Error, can't render the after interpolation " << endl;
+  glColor3f(0, 1, 0);
+  _patch.RenderData();
   glPointSize(1.0f);
   glEnable(GL_LIGHTING);
 }
@@ -1135,4 +1153,84 @@ GLWidget::setShaderNumber(int index)
   _selectedShader = index;
   updateGL();
 }
+
+GLvoid
+GLWidget::setPoints()
+{
+
+  if (_point_number <= manager->getPointNumber() + 1) {
+    DCoordinate3 point = manager->getPoint(_point_number);
+    _points[0] = point.x();
+    _points[1] = point.y();
+    _points[2] = point.z();
+    emit patchXPointChanged(point.x());
+    emit patchYPointChanged(point.y());
+    emit patchZPointChanged(point.z());
+  }
+}
+void
+GLWidget::setUIndex(int index)
+{
+  if (index <= _patchManager->getPointCountU()) {
+    uIndex = index;
+    DCoordinate3 point = _patchManager->getPoint(uIndex, vIndex);
+    patchPoint[0] = point.x();
+    patchPoint[1] = point.y();
+    patchPoint[2] = point.z();
+    emit patchXPointChanged(point.x());
+    emit patchYPointChanged(point.y());
+    emit patchZPointChanged(point.z());
+    updateGL();
+  }
+}
+void
+GLWidget::setVIndex(int index)
+{
+  if (index <= _patchManager->getPointCountV()) {
+    vIndex = index;
+    DCoordinate3 point = _patchManager->getPoint(uIndex, vIndex);
+    patchPoint[0] = point.x();
+    patchPoint[1] = point.y();
+    patchPoint[2] = point.z();
+    emit patchXPointChanged(point.x());
+    emit patchYPointChanged(point.y());
+    emit patchZPointChanged(point.z());
+    updateGL();
+  }
+}
+GLvoid
+GLWidget::paintPoint(DCoordinate3 point)
+{
+  glPointSize(12);
+  glDisable(GL_LIGHTING);
+  glBegin(GL_POINTS);
+  glColor3f(0, 1, 1);
+  glVertex3f(point.x(), point.y(), point.z());
+  glEnd();
+  glEnable(GL_LIGHTING);
+  glPointSize(2);
+}
+
+void
+GLWidget::changePatchPoint()
+{
+  _patchManager->changeControllPoint(uIndex, vIndex, patchPoint);
+  updateGL();
+}
+void
+GLWidget::setPatchX(double x)
+{
+  patchPoint[0] = x;
+}
+void
+GLWidget::setPatchY(double y)
+{
+  patchPoint[1] = y;
+}
+void
+GLWidget::setPatchZ(double z)
+{
+  patchPoint[2] = z;
+}
+
 }

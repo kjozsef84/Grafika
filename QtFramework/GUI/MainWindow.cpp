@@ -108,6 +108,66 @@ MainWindow::MainWindow(QWidget* parent)
           SIGNAL(currentIndexChanged(int)),
           _gl_widget,
           SLOT(setShaderNumber(int)));
+
+  connect(_gl_widget,
+          SIGNAL(xPointChanged(double)),
+          _side_widget->xDoubleSpinBox,
+          SLOT(setValue(double)));
+
+  connect(_gl_widget,
+          SIGNAL(yPointChanged(double)),
+          _side_widget->yDoubleSpinBox,
+          SLOT(setValue(double)));
+
+  connect(_gl_widget,
+          SIGNAL(zPointChanged(double)),
+          _side_widget->zDoubleSpinBox,
+          SLOT(setValue(double)));
+
+  // surface ----------------------------
+  connect(_side_widget->UspinBox,
+          SIGNAL(valueChanged(int)),
+          _gl_widget,
+          SLOT(setUIndex(int)));
+  connect(_side_widget->VspinBox,
+          SIGNAL(valueChanged(int)),
+          _gl_widget,
+          SLOT(setVIndex(int)));
+
+  // -------------------      surface signal
+
+  connect(_side_widget->surfaceModifyButton,
+          SIGNAL(clicked()),
+          _gl_widget,
+          SLOT(changePatchPoint()));
+
+  connect(_gl_widget,
+          SIGNAL(patchYPointChanged(double)),
+          _side_widget->patchYSpinBox,
+          SLOT(setValue(double)));
+
+  connect(_gl_widget,
+          SIGNAL(patchXPointChanged(double)),
+          _side_widget->patchXSpinBox,
+          SLOT(setValue(double)));
+
+  connect(_gl_widget,
+          SIGNAL(patchZPointChanged(double)),
+          _side_widget->patchZSpinBox,
+          SLOT(setValue(double)));
+
+  connect(_side_widget->patchYSpinBox,
+          SIGNAL(valueChanged(double)),
+          _gl_widget,
+          SLOT(setPatchY(double)));
+  connect(_side_widget->patchXSpinBox,
+          SIGNAL(valueChanged(double)),
+          _gl_widget,
+          SLOT(setPatchX(double)));
+  connect(_side_widget->patchZSpinBox,
+          SIGNAL(valueChanged(double)),
+          _gl_widget,
+          SLOT(setPatchZ(double)));
 }
 
 //--------------------------------
