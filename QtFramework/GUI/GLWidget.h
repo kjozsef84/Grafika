@@ -77,6 +77,7 @@ private:
   BicubicSplineManager* manager;
   GLuint _curve_number = 1;
   GLuint _point_number = 1;
+  GLuint _oldPointNumber = 1;
   DCoordinate3 _points;
   GLboolean _open = GL_FALSE;
 
@@ -92,6 +93,8 @@ private:
   // -------------  Patches
 
   myPatchManager* _patchManager;
+  GLint uIndex = 0, vIndex = 0;
+  DCoordinate3 patchPoint;
 
   //------------      Private Slots
 
@@ -132,6 +135,20 @@ public slots:
   void setZ(double);
   void setIsOpen(bool);
   void setShaderNumber(int);
+  void setUIndex(int);
+  void setVIndex(int);
+  void changePatchPoint();
+  void setPatchX(double);
+  void setPatchY(double);
+  void setPatchZ(double);
+
+signals:
+  void xPointChanged(double);
+  void yPointChanged(double);
+  void zPointChanged(double);
+  void patchXPointChanged(double);
+  void patchYPointChanged(double);
+  void patchZPointChanged(double);
 
 private slots:
   void _rotateModel();
@@ -155,5 +172,7 @@ private:
   GLvoid initializeControlNet();
   GLvoid renderControlNet();
   GLvoid initShader();
+  GLvoid setPoints();
+  GLvoid paintPoint(DCoordinate3);
 };
 }

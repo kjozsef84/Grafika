@@ -20,7 +20,7 @@ BicubicBSplinePatch::UBlendingFunctionValues(
 
   blending_values(0) = w3 / 6.0;
   blending_values(1) = (3 * u * w2 + 3 * w1 + 1) / 6.0;
-  blending_values(2) = (3 * u2 * w2 + 3 * u + 1) / 6.0;
+  blending_values(2) = (3 * u2 * w1 + 3 * u + 1) / 6.0;
   blending_values(3) = u3 / 6.0;
 
   return GL_TRUE;
@@ -41,7 +41,7 @@ BicubicBSplinePatch::VBlendingFunctionValues(
 
   blending_values(0) = w3 / 6.0;
   blending_values(1) = (3 * v * w2 + 3 * w1 + 1) / 6.0;
-  blending_values(2) = (3 * v2 * w2 + 3 * v + 1) / 6.0;
+  blending_values(2) = (3 * v2 * w1 + 3 * v + 1) / 6.0;
   blending_values(3) = v3 / 6.0;
 
   return GL_TRUE;
@@ -69,9 +69,11 @@ BicubicBSplinePatch::CalculatePartialDerivatives(
   u_blending_values(2) = (3 * u2 * w1 + 3 * u + 1) / 6.0;
   u_blending_values(3) = u3 / 6.0;
 
-  d1_u_blending_values(0) = w2 / -2.0;
-  d1_u_blending_values(1) = (u * (3 * u - 4)) / 2.0;
-  d1_u_blending_values(2) = (3 * u2 - 2 * u - 1) / -2.0;
+  d1_u_blending_values(0) = -w2 / 2.0;
+  d1_u_blending_values(1) =
+    (w2 - 2.0 * u * w1 - 1.0) / 2.0; //(u * (3 * u - 4)) / 2.0;
+  d1_u_blending_values(2) =
+    -(u2 - 2.0 * w1 * u - 1.0) / 2.0; //(3.0 * u2 - 2.0 * u - 1) / -2.0;
   d1_u_blending_values(3) = u2 / 2.0;
 
   RowMatrix<GLdouble> v_blending_values(4), d1_v_blending_values(4);
@@ -86,9 +88,16 @@ BicubicBSplinePatch::CalculatePartialDerivatives(
   v_blending_values(2) = (3 * v2 * w1 + 3 * v + 1) / 6.0;
   v_blending_values(3) = v3 / 6.0;
 
-  d1_v_blending_values(0) = w2 / -2.0;
-  d1_v_blending_values(1) = (v * (3 * v - 4)) / 2.0;
-  d1_v_blending_values(2) = (3 * v2 - 2 * v - 1) / -2.0;
+  //  d1_v_blending_values(0) = w2 / -2.0;
+  //  d1_v_blending_values(1) = (v * (3 * v - 4)) / 2.0;
+  //  d1_v_blending_values(2) = (3.0 * v2 - 2.0 * v - 1) / -2.0;
+  //  d1_v_blending_values(3) = v2 / 2.0;
+
+  d1_v_blending_values(0) = -w2 / 2.0;
+  d1_v_blending_values(1) =
+    (w2 - 2.0 * v * w1 - 1.0) / 2.0; //(u * (3 * u - 4)) / 2.0;
+  d1_v_blending_values(2) =
+    -(v2 - 2.0 * w1 * v - 1.0) / 2.0; //(3.0 * u2 - 2.0 * u - 1) / -2.0;
   d1_v_blending_values(3) = v2 / 2.0;
 
   pd.ResizeRows(2);
@@ -102,7 +111,7 @@ BicubicBSplinePatch::CalculatePartialDerivatives(
       aux_d1_v += _data(row, column) * d1_v_blending_values(column);
     }
     pd(0, 0) += aux_d0_v * u_blending_values(row);
-    pd(1, 0) += aux_d0_v * d1_v_blending_values(row);
+    pd(1, 0) += aux_d0_v * d1_u_blending_values(row);
     pd(1, 1) += aux_d1_v * u_blending_values(row);
   }
   return GL_TRUE;

@@ -1,7 +1,9 @@
+#include "../Core/Constants.h"
 #include "../Core/DCoordinates3.h"
 #include "../Core/Materials.h"
 #include "../Core/Matrices.h"
 #include "../Core/bicubicbsplinepatch.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -10,18 +12,22 @@ namespace cagd {
 class myPatchManager
 {
 private:
-  Matrix<DCoordinate3> _data;
+  Matrix<DCoordinate3> _net;
   GLuint _size = 4;
-  RowMatrix<BicubicBSplinePatch> patches;
-  RowMatrix<TriangulatedMesh3*> _imageOfPatches;
+  Matrix<BicubicBSplinePatch> patches;
+  Matrix<TriangulatedMesh3*> _imageOfPatches;
   GLuint _patchCount = 9;
+  GLuint rowCount, columnCount;
 
 public:
-  myPatchManager();
+  myPatchManager(int, int);
   ~myPatchManager();
-  GLvoid setContolPoints();
-  GLvoid getData(BicubicBSplinePatch&);
-  GLvoid generateImages();
+  GLvoid generateImage();
   GLvoid renderImages();
+  GLvoid renderControlPoints();
+  DCoordinate3 getPoint(int, int);
+  GLint getPointCountU();
+  GLint getPointCountV();
+  GLvoid changeControllPoint(int, int, DCoordinate3);
 };
 }
