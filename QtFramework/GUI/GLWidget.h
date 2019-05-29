@@ -6,7 +6,7 @@
 #include "../Core/Materials.h"
 #include "../Core/ShaderPrograms.h"
 #include "../Core/TriangulatedMeshes3.h"
-#include "../Core/mypatchmanager.h"
+#include "../Core/originalpatch.h"
 #include "../Cyclic/CyclicCurve3.h"
 #include "../Cyclic/bicubicsplinemanager.h"
 #include "../Cyclic/mycycliccurve3.h"
@@ -96,6 +96,10 @@ private:
   GLint uIndex = 0, vIndex = 0;
   DCoordinate3 patchPoint;
 
+  // ------------   Original patch
+
+  originalPatch* myOriginalPatch;
+
   //------------      Private Slots
 
 private slots:
@@ -174,5 +178,8 @@ private:
   GLvoid initShader();
   GLvoid setPoints();
   GLvoid paintPoint(DCoordinate3);
+
+  GLvoid initializeMyPatch();
+  GLvoid renderMyPatch();
 };
 }
