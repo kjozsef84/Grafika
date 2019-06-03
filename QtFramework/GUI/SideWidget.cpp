@@ -18,4 +18,10 @@ SideWidget::SideWidget(QWidget* parent)
 
   rotate_y_slider->setPalette(p);
 }
+
+void
+SideWidget::set_page(int index)
+{
+  this->stackedWidget->setCurrentIndex(index);
+}
 }

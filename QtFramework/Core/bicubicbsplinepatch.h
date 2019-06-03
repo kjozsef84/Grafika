@@ -8,16 +8,16 @@ class BicubicBSplinePatch : public TensorProductSurface3
 public:
   BicubicBSplinePatch();
   GLboolean UBlendingFunctionValues(GLdouble u_knot,
-                                    RowMatrix<GLdouble>& blending_values) const;
+                                    RowMatrix<GLdouble> &blending_values) const override;
 
   GLboolean VBlendingFunctionValues(GLdouble v_knot,
-                                    RowMatrix<GLdouble>& blending_values) const;
+                                    RowMatrix<GLdouble> &blending_values) const override;
 
   GLboolean CalculatePartialDerivatives(
     GLuint maximum_order_of_partial_derivatives,
     GLdouble u,
     GLdouble v,
-    PartialDerivatives& pd) const;
+    PartialDerivatives& pd) const override;
 };
 
 }

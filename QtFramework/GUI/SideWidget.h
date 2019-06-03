@@ -8,8 +8,11 @@ class SideWidget
   : public QWidget
   , public Ui::SideWidget
 {
+  Q_OBJECT
 public:
   // special and default constructor
-  SideWidget(QWidget* parent = 0);
+  explicit SideWidget(QWidget* parent = nullptr);
+public slots:
+  void set_page(int index);
 };
 }

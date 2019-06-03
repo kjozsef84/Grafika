@@ -49,29 +49,35 @@ private:
   GLuint _pc_count;
   GLuint _pointCount;
   GLuint homeworkNumber = 1;
-  RowMatrix<ParametricCurve3*> _pc;
+  int _type_index;
+  int _combo_index;
+  ParametricCurve3* _pc;
   RowMatrix<GenericCurve3*> _img_pc;
+  GenericCurve3* _image_of_pc;
   RowMatrix<GLdouble> _scale;
 
   //------------      Lab2    ----------------
 
   QTimer* _timer;
-  GLfloat _angle = 0;
+  GLdouble _angle = 0;
   GLuint _mangle;
 
-  TriangulatedMesh3 _animal;
+  TriangulatedMesh3 _elephant_model;
+  TriangulatedMesh3 _mouse_model;
+  TriangulatedMesh3 _sphere_model;
   ShaderProgram _shader;
 
   RowMatrix<ShaderProgram> _shaders;
-  GLint _selectedShader = 0;
+  GLuint _selectedShader = 0;
 
   GLuint _ps_count;
-  RowMatrix<ParametricSurface3*> _ps;
+  ParametricSurface3* _ps;
+  TriangulatedMesh3* _image_of_ps;
   RowMatrix<TriangulatedMesh3*> _img_ps;
-
+  RowMatrix<TriangulatedMesh3*> _image_of_ps_pointers;
   //------------      Lab4        ---------------
 
-  CyclicCurve3* _cyc3;
+  CyclicCurve3* _cyc3 = nullptr;
   GenericCurve3* _image_of_cyc3;
   GenericCurve3* _image_of_cyc3_after;
   BicubicSplineManager* manager;
@@ -84,7 +90,8 @@ private:
   //------------      Lab4_2      ---------------
 
   BicubicBSplinePatch _patch;
-  TriangulatedMesh3 *_before_interpolation, *_after_interpolation;
+  TriangulatedMesh3* _before_interpolation = nullptr;
+  TriangulatedMesh3* _after_interpolation;
   GLuint _ulineCount = 10;
   GLuint _vlineCount = 10;
   RowMatrix<GenericCurve3*>* uLines;
@@ -92,23 +99,23 @@ private:
 
   // -------------  Patches
 
-  myPatchManager* _patchManager;
+  myPatchManager* _patchManager = nullptr;
   GLint uIndex = 0, vIndex = 0;
   DCoordinate3 patchPoint;
 
   // ------------   Original patch
 
-  originalPatch* myOriginalPatch;
+  originalPatch* myOriginalPatch = nullptr;
 
   //------------      Private Slots
 
 private slots:
-  void _animate();
+  // void _animate();
 
 public:
   // special and default constructor
   // the format specifies the properties of the rendering window
-  GLWidget(QWidget* parent = 0,
+  GLWidget(QWidget* parent = nullptr,
            const QGLFormat& format = QGL::Rgba | QGL::DepthBuffer |
                                      QGL::DoubleBuffer);
 
@@ -117,7 +124,9 @@ public:
   void paintGL();
   void resizeGL(int w, int h);
   virtual ~GLWidget();
-
+  void switch_parametric_curve(GLuint index);
+  void init_models();
+  void switch_parametric_surface(int index);
 public slots:
   // public event handling methods/slots
   void set_angle_x(int value);
@@ -130,7 +139,10 @@ public slots:
   void set_trans_y(double value);
   void set_trans_z(double value);
 
-  void setParametricCurve(int index);
+  // void setParametricCurve(int index);
+  void set_type_index(int index);
+  void set_combo_index(int index);
+  void set_displayed_image();
   void signalManagement();
   void setWhichCurve(int index);
   void setWhichPoint(int index);
@@ -146,6 +158,9 @@ public slots:
   void setPatchY(double);
   void setPatchZ(double);
 
+  void show_model();
+  void show_parametric_surface();
+  void show_parametric_curve();
 signals:
   void xPointChanged(double);
   void yPointChanged(double);
@@ -155,14 +170,13 @@ signals:
   void patchZPointChanged(double);
 
 private slots:
-  void _rotateModel();
+  // void _rotateModel();
 
 private:
-  void initializeFirst();
-  void drawFirst();
-  void initializeAnimal();
-  void drawAnimal();
-  void initalizeSurface();
+  void initialize_parametric_curve(GLuint index);
+  // void drawFirst();
+  void initializeModel();
+  void drawModel();
   void drawSurface();
   void initializeCyclicCurve();
   void renderCyclicCurve();
@@ -181,5 +195,6 @@ private:
 
   GLvoid initializeMyPatch();
   GLvoid renderMyPatch();
+  void initialize_parametric_surface(int index);
 };
 }

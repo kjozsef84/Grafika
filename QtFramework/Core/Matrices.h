@@ -94,7 +94,7 @@ class RowMatrix : public Matrix<T>
 {
 public:
   // special constructor (can also be used as a default constructor)
-  RowMatrix(GLuint column_count = 1);
+  explicit RowMatrix(GLuint column_count = 1);
 
   // get element by reference
   T& operator()(GLuint column);
@@ -105,7 +105,7 @@ public:
   T operator[](GLuint column) const;
 
   // a row matrix consists of a single row
-  GLboolean ResizeRows(GLuint row_count);
+  GLboolean ResizeRows(GLuint row_count) override;
 };
 
 //----------------------------
@@ -116,7 +116,7 @@ class ColumnMatrix : public Matrix<T>
 {
 public:
   // special constructor (can also be used as a default constructor)
-  ColumnMatrix(GLuint row_count = 1);
+  explicit ColumnMatrix(GLuint row_count = 1);
 
   // get element by reference
   T& operator()(GLuint row);
@@ -127,7 +127,7 @@ public:
   T operator[](GLuint row) const;
 
   // a column matrix consists of a single column
-  GLboolean ResizeColumns(GLuint column_count);
+  GLboolean ResizeColumns(GLuint column_count) override;
 };
 
 //--------------------------------
@@ -147,7 +147,7 @@ protected:
 
 public:
   // special constructor (can also be used as a default constructor)
-  TriangularMatrix(GLuint row_count = 1);
+  explicit TriangularMatrix(GLuint row_count = 1);
 
   // get element by reference
   T& operator()(GLuint row, GLuint column);
@@ -256,7 +256,7 @@ Matrix<T>::ResizeColumns(GLuint column_count)
 
     for (typename std::vector<std::vector<T>>::iterator row = _data.begin();
          row != _data.end();
-         row++)
+         ++row)
       row->resize(_column_count);
   }
 
@@ -402,7 +402,7 @@ TriangularMatrix<T>::TriangularMatrix(GLuint row_count)
   , _data(row_count)
 {
 
-  for (int i = 0; i < row_count; i++) {
+  for (GLuint i = 0; i < row_count; i++) {
     _data[i].resize(i + 1);
   }
 }

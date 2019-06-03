@@ -13,31 +13,31 @@ GLWidget::GLWidget(QWidget* parent, const QGLFormat& format)
   : QGLWidget(format, parent)
 {
 
-  _timer = new QTimer(this);
-  _timer->setInterval(10);
-  connect(_timer, SIGNAL(timeout()), this, SLOT(_animate()));
-  connect(_timer, SIGNAL(timeout()), this, SLOT(_rotateModel()));
+  //_timer = new QTimer(this);
+  //_timer->setInterval(10);
+  // connect(_timer, SIGNAL(timeout()), this, SLOT(_animate()));
+  // connect(_timer, SIGNAL(timeout()), this, SLOT(_rotateModel()));
 }
 
 GLWidget::~GLWidget()
 {
 
-  switch (homeworkNumber) {
-    case 1:
-      for (GLuint i = 0; i < _pc_count; i++) {
-        if (_pc[i])
-          delete _pc[i], _pc[i] = nullptr;
-        if (_img_pc[i])
-          delete _img_pc[i], _img_pc[i] = nullptr;
-      }
-      break;
-    case 5:
-      if (_before_interpolation)
-        delete _before_interpolation, _before_interpolation = 0;
-      if (_after_interpolation)
-        delete _after_interpolation, _after_interpolation = 0;
-      break;
-  }
+  //  switch (homeworkNumber) {
+  //    case 1:
+  //      for (GLuint i = 0; i < _pc_count; i++) {
+  //        if (_pc[i])
+  //          delete _pc[i], _pc[i] = nullptr;
+  //        if (_img_pc[i])
+  //          delete _img_pc[i], _img_pc[i] = nullptr;
+  //      }
+  //      break;
+  //    case 5:
+  //      if (_before_interpolation)
+  //        delete _before_interpolation, _before_interpolation = 0;
+  //      if (_after_interpolation)
+  //        delete _after_interpolation, _after_interpolation = 0;
+  //      break;
+  //  }
 
   /* case 3:
    cout << "szia" << endl;
@@ -97,8 +97,8 @@ GLWidget::initializeGL()
   glEnable(GL_DEPTH_TEST);
 
   // setting the background color
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-  // glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  //  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
   // initial values of transformation parameters
   _angle_x = _angle_y = _angle_z = 0.0;
@@ -132,8 +132,8 @@ GLWidget::initializeGL()
   glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
   glEnable(GL_POLYGON_SMOOTH);
   glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
+  //  glEnable(GL_LIGHTING);
+  //  glEnable(GL_LIGHT0);
   glEnable(GL_NORMALIZE);
 
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -143,64 +143,49 @@ GLWidget::initializeGL()
 
   //------------------------------------------------------------------
 
-  homeworkNumber = 8;
-
-  //------------------------------------------------------------------
-  switch (homeworkNumber) {
-    case 1:
-      initializeFirst();
-      break;
-    case 2:
-      // glewInit();
-      initializeAnimal();
-      initShader();
-      break;
-    case 3:
-      initalizeSurface();
-      break;
-    case 4:
-      initializeCyclicCurve();
-      break;
-    case 5:
-      initializeBicubicSpline();
-      break;
-    case 6:
-      initializeBicubicSplineArc3();
-      break;
-    case 7:
-      initializePatchManager();
-      break;
-    case 8:
-      initializeMyPatch();
-      break;
+  homeworkNumber = 1;
+  _type_index = 0;
+  _combo_index = 0;
+  _pc_count = 5;
+  _img_pc.ResizeColumns(_pc_count);
+  for (GLuint i = 0; i < _pc_count; i++) {
+    _img_pc[i] = nullptr;
   }
-
-  /*
-          RowMatrix<ParametricCurve3::Derivative> derivative(3);
-          derivative(0) = secondCurve::d0;
-          derivative(1) = secondCurve::d1;
-          derivative(2) = secondCurve::d2;
-
-          _pc = nullptr;
-          _pc = new (nothrow) ParametricCurve3( derivative, secondCurve::u_min,
-     secondCurve::u_max); if ( ! _pc ){
-              //error
-          }
-          GLuint pointCount = 300;
-          GLenum usage_flag = GL_STATIC_DRAW;
-
-          _imageOfPc = nullptr;
-          _imageOfPc = _pc->GenerateImage(pointCount,usage_flag);
-
-
-          if ( ! _imageOfPc ){
-              //error
-          }
-
-          if ( ! _imageOfPc -> UpdateVertexBufferObjects(usage_flag) ){
-              cout << " error " << endl;
-          }
-  */
+  _ps_count = 5;
+  _img_ps.ResizeColumns(_ps_count);
+  for (GLuint i = 0; i < _ps_count; i++) {
+    _img_ps[i] = nullptr;
+  }
+  init_models();
+  set_displayed_image();
+  //------------------------------------------------------------------
+  //  switch (homeworkNumber) {
+  //    case 1:
+  //      initialize_parametric_curve(index);
+  //      break;
+  //    case 2:
+  //      initializeModel();
+  //      initShader();
+  //      break;
+  //    case 3:
+  //      initalizeSurface();
+  //      break;
+  //    case 4:
+  //      initializeCyclicCurve();
+  //      break;
+  //    case 5:
+  //      initializeBicubicSpline();
+  //      break;
+  //    case 6:
+  //      initializeBicubicSplineArc3();
+  //      break;
+  //    case 7:
+  //      initializePatchManager();
+  //      break;
+  //    case 8:
+  //      initializeMyPatch();
+  //      break;
+  //  }
 }
 
 //-----------------------
@@ -225,52 +210,32 @@ GLWidget::paintGL()
   // render your geometry (this is oldest OpenGL rendering technique, later we
   // will use some advanced methods)
 
-  switch (homeworkNumber) {
-    case 1:
-      drawFirst();
-      break;
-    case 2:
-      drawAnimal();
-      break;
-    case 3:
-      drawSurface();
-      break;
-    case 4:
-      renderCyclicCurve();
-      break;
-    case 5:
-      renderBicubicSpline();
-      break;
-    case 6:
-      renderBicubicSplineArc3();
-      break;
-    case 7:
-      renderPatchManager();
-      break;
-    case 8:
-      renderMyPatch();
-      break;
-  }
-
-  /*
-              if (_imageOfPc ){
-
-                  glColor3f(1.0f,0.0f,0.0f);
-                  _imageOfPc->RenderDerivatives(0,GL_LINE_STRIP);
-                  glPointSize(5.0f);
-                      glColor3f(0.0f,0.5f,0.0f);
-                      _imageOfPc->RenderDerivatives(1,GL_LINES);
-                      _imageOfPc->RenderDerivatives(1,GL_POINTS);
-
-                      glColor3f(0.0f,0.0f,1.0f);
-                      _imageOfPc->RenderDerivatives(2,GL_LINES);
-                      _imageOfPc->RenderDerivatives(2,GL_LINES);
-                  glPointSize(1.0f);
-
-
-              }
-              */
-
+  //  switch (homeworkNumber) {
+  //    case 1:
+  //      drawFirst();
+  //      break;
+  //    case 2:
+  //      drawAnimal();
+  //      break;
+  //    case 3:
+  //      drawSurface();
+  //      break;
+  //    case 4:
+  //      renderCyclicCurve();
+  //      break;
+  //    case 5:
+  //      renderBicubicSpline();
+  //      break;
+  //    case 6:
+  //      renderBicubicSplineArc3();
+  //      break;
+  //    case 7:
+  //      renderPatchManager();
+  //      break;
+  //    case 8:
+  //      renderMyPatch();
+  //      break;
+  //  }
   /*
               GLuint pointCount = 200, derCount = 1;
               GLfloat du = 4.0 * PI / ( pointCount ), u = -2 * PI;
@@ -418,7 +383,7 @@ GLWidget::paintGL()
           glDisableClientState(GL_VERTEX_ARRAY);
 
   */
-
+  set_displayed_image();
   // pops the current matrix stack, replacing the current matrix with the one
   // below it on the stack, i.e., the original model view matrix is restored
   glPopMatrix();
@@ -451,6 +416,119 @@ GLWidget::resizeGL(int w, int h)
 //-----------------------------------
 // implementation of the public slots
 //-----------------------------------
+void
+GLWidget::set_displayed_image()
+{
+  //_timer->stop();
+  cout << "Type index" << _type_index << endl;
+  switch (_type_index) {
+    case 0:
+      switch_parametric_curve(_combo_index);
+      show_parametric_curve();
+      break;
+    case 1:
+      cout << _combo_index << endl;
+      switch_parametric_surface(_combo_index);
+      show_parametric_surface();
+      break;
+    case 2:
+      show_model();
+      break;
+    case 3:
+      if (!_cyc3) {
+        initializeCyclicCurve();
+      }
+      renderCyclicCurve();
+      break;
+    case 4:
+      if (!_before_interpolation) {
+        initializeBicubicSpline();
+      }
+      renderBicubicSpline();
+      break;
+    case 5:
+      if (!manager) {
+        initializeBicubicSplineArc3();
+      }
+      renderBicubicSplineArc3();
+      break;
+    case 6:
+      if (!_patchManager) {
+        initializePatchManager();
+      }
+      renderPatchManager();
+      break;
+    case 7:
+      if (!myOriginalPatch) {
+        initializeMyPatch();
+      }
+      renderMyPatch();
+      break;
+    default:
+      cout << "Something's gone wrong!" << endl;
+      exit(1);
+  }
+}
+
+void
+GLWidget::show_parametric_curve()
+{
+  if (_image_of_pc) {
+    glColor3f(1.0f, 0.0f, 0.0f);
+    _image_of_pc->RenderDerivatives(0, GL_LINE_STRIP);
+
+    glPointSize(5.0f);
+    glColor3f(0.0f, 0.5f, 0.0f);
+    _image_of_pc->RenderDerivatives(1, GL_LINES);
+    _image_of_pc->RenderDerivatives(1, GL_POINTS);
+
+    glColor3f(0.1f, 0.5f, 0.9f);
+    _image_of_pc->RenderDerivatives(2, GL_LINES);
+    _image_of_pc->RenderDerivatives(2, GL_POINTS);
+    glPointSize(1.0f);
+  }
+}
+
+void
+GLWidget::show_parametric_surface()
+{
+  //_dl->Enable();
+  // glEnable(GL_LIGHTING);
+
+  if (_image_of_ps) {
+    MatFBBrass.Apply();
+    _image_of_ps->Render();
+  }
+
+  // glDisable(GL_LIGHTING);
+  //_dl->Disable();
+}
+
+void
+GLWidget::show_model()
+{
+  MatFBBrass.Apply();
+
+  // glEnable(GL_LIGHTING);
+  // glEnable(GL_NORMALIZE);
+  //        glEnable(GL_LIGHT0);
+  //_dl->Enable();
+  switch (_combo_index) {
+    case 0:
+      _elephant_model.Render();
+      break;
+    case 1:
+      _mouse_model.Render();
+      break;
+    case 2:
+      _sphere_model.Render();
+      break;
+  }
+  //  _dl->Disable();
+
+  //  glDisable(GL_LIGHTING);
+  //  glDisable(GL_NORMALIZE);
+}
 
 void
 GLWidget::set_angle_x(int value)
@@ -516,215 +594,304 @@ GLWidget::set_trans_z(double value)
 }
 
 void
-GLWidget::setParametricCurve(int index)
+GLWidget::initialize_parametric_curve(GLuint index)
 {
-  this->_ps_selected = index;
-  updateGL();
-}
-void
-GLWidget::initializeFirst()
-{
-
-  _pc_count = 5;
-  _pointCount = 200;
-  _pc.ResizeColumns(_pc_count);
-
   RowMatrix<ParametricCurve3::Derivative> derivative(3);
-  derivative(0) = firstCurve::d0;
-  derivative(1) = firstCurve::d1;
-  derivative(2) = firstCurve::d2;
-  _pc[0] =
-    new ParametricCurve3(derivative, firstCurve::u_min, firstCurve::u_max);
-
-  derivative(0) = secondCurve::d0;
-  derivative(1) = secondCurve::d1;
-  derivative(2) = secondCurve::d2;
-  _pc[1] =
-    new ParametricCurve3(derivative, secondCurve::u_min, secondCurve::u_max);
-
-  derivative(0) = vivianCurve::d0;
-  derivative(1) = vivianCurve::d1;
-  derivative(2) = vivianCurve::d2;
-  _pc[2] =
-    new ParametricCurve3(derivative, vivianCurve::u_min, vivianCurve::u_max);
-
-  derivative(0) = thirdCurve::d0;
-  derivative(1) = thirdCurve::d1;
-  derivative(2) = thirdCurve::d2;
-  _pc[3] =
-    new ParametricCurve3(derivative, thirdCurve::u_min, thirdCurve::u_max);
-
-  derivative(0) = roseCurve::d0;
-  derivative(1) = roseCurve::d1;
-  derivative(2) = roseCurve::d2;
-  _pc[4] = new ParametricCurve3(derivative, roseCurve::u_min, roseCurve::u_max);
-
-  _img_pc.ResizeColumns(_pc_count);
+  switch (index) {
+    case 0:
+      derivative(0) = firstCurve::d0;
+      derivative(1) = firstCurve::d1;
+      derivative(2) = firstCurve::d2;
+      _pc =
+        new ParametricCurve3(derivative, firstCurve::u_min, firstCurve::u_max);
+      break;
+    case 1:
+      derivative(0) = secondCurve::d0;
+      derivative(1) = secondCurve::d1;
+      derivative(2) = secondCurve::d2;
+      _pc = new ParametricCurve3(
+        derivative, secondCurve::u_min, secondCurve::u_max);
+      break;
+    case 2:
+      derivative(0) = vivianCurve::d0;
+      derivative(1) = vivianCurve::d1;
+      derivative(2) = vivianCurve::d2;
+      _pc = new ParametricCurve3(
+        derivative, vivianCurve::u_min, vivianCurve::u_max);
+      break;
+    case 3:
+      derivative(0) = thirdCurve::d0;
+      derivative(1) = thirdCurve::d1;
+      derivative(2) = thirdCurve::d2;
+      _pc =
+        new ParametricCurve3(derivative, thirdCurve::u_min, thirdCurve::u_max);
+      break;
+    case 4:
+      derivative(0) = roseCurve::d0;
+      derivative(1) = roseCurve::d1;
+      derivative(2) = roseCurve::d2;
+      _pc =
+        new ParametricCurve3(derivative, roseCurve::u_min, roseCurve::u_max);
+      break;
+    default:
+      cout << "No such index!" << endl;
+  }
   _scale.ResizeColumns(_pc_count);
 
-  for (GLuint i = 0; i < _pc_count; i++) // initializa GLMAP
-  {
-    _scale[i] = 0.5;
-    if (_pc[i]) {
-      _img_pc[i] =
-        _pc[i]->GenerateImage(_pointCount); // test letezik e a kep vagy se
-    }
-    if (_img_pc[i]) {
-      _img_pc[i]->UpdateVertexBufferObjects(_scale[i]);
-    }
-  }
-
-  _ps_selected = 0;
+  //  for (GLuint i = 0; i < _pc_count; i++) // initializa GLMAP
+  //  {
+  //    _scale[i] = 0.5;
+  //    if (_pc[i]) {
+  //      _img_pc[i] =
+  //        _pc[i]->GenerateImage(_pointCount); // test letezik e a kep vagy se
+  //    }
+  //    if (_img_pc[i]) {
+  //      _img_pc[i]->UpdateVertexBufferObjects(_scale[i]);
+  //    }
+  //  }
 }
 
 void
-GLWidget::drawFirst()
+GLWidget::switch_parametric_curve(GLuint index)
 {
-  glDisable(GL_LIGHTING);
+  if (_img_pc[index] == nullptr) {
+    initialize_parametric_curve(index);
 
-  glColor3f(1.0f, 0.0f, 0.0f);
-  _img_pc[_ps_selected]->RenderDerivatives(0, GL_LINE_STRIP);
-  glPointSize(5.0f);
-  glColor3f(0.0f, 0.5f, 0.0f);
-  _img_pc[_ps_selected]->RenderDerivatives(1, GL_LINES);
-  _img_pc[_ps_selected]->RenderDerivatives(1, GL_POINTS);
+    GLuint div_point_count = 200;
+    GLenum usage_flag = GL_STATIC_DRAW;
 
-  glColor3f(0.0f, 0.0f, 1.0f);
-  _img_pc[_ps_selected]->RenderDerivatives(2, GL_LINES);
-  _img_pc[_ps_selected]->RenderDerivatives(2, GL_LINES);
-  glPointSize(1.0f);
-}
+    _image_of_pc = nullptr;
+    _image_of_pc = _pc->GenerateImage(div_point_count, usage_flag);
 
-void
-GLWidget::initializeAnimal()
-{
+    if (!_image_of_pc) {
+      // Error
+      cout << "Couldn't generate the image!" << endl;
+      exit(1);
+    }
 
-  glewInit();
-  if (_animal.LoadFromOFF("../Models/sphere.off", true)) {
-    if (_animal.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)) {
-      _mangle = 0.0;
-      _timer->start();
+    _img_pc[index] = _image_of_pc;
+
+    if (!_image_of_pc->UpdateVertexBufferObjects(_scale[index], usage_flag)) {
+      cout
+        << "Could not create the vertex buffer object of the parametric curve!"
+        << endl;
     }
   } else {
-    cout << " cant find the animal OFF file " << endl;
+    _image_of_pc = _img_pc[index];
   }
 }
-void
-GLWidget::drawAnimal()
-{
-
-  glPushMatrix();
-  glEnable(GL_LIGHTING);
-  // glRotatef(_mangle, 1.0, 1.0, 1.0);
-  _shaders[_selectedShader].Enable();
-  MatFBRuby.Apply();
-  _animal.Render();
-  _shaders[_selectedShader].Disable();
-  glDisable(GL_LIGHTING);
-  glPopMatrix();
-}
 
 void
-GLWidget::_animate()
+GLWidget::switch_parametric_surface(int index)
 {
-  GLfloat* vertex = _animal.MapVertexBuffer(GL_READ_WRITE);
-  GLfloat* normal = _animal.MapNormalBuffer(GL_READ_ONLY);
+  if (_img_ps[index] == nullptr) {
+    initialize_parametric_surface(index);
 
-  _angle += DEG_TO_RADIAN;
-  if (_angle >= TWO_PI)
-    _angle -= TWO_PI;
+    GLuint div_point_count_u = 400;
+    GLuint div_point_count_v = 400;
+    GLenum usage_flag = GL_STATIC_DRAW;
 
-  GLfloat scale = sin(_angle) / 3000.0;
-  for (GLuint i = 0; i < _animal.VertexCount(); i++) {
-    for (GLuint coordinate = 0; coordinate < 3;
-         coordinate++, vertex++, normal++) {
-      *vertex += scale * (*normal);
+    _image_of_ps = nullptr;
+    _image_of_ps =
+      _ps->GenerateImage(div_point_count_u, div_point_count_v, usage_flag);
+
+    if (!_image_of_ps) {
+      if (_ps) {
+        delete _ps, _ps = nullptr;
+      }
+      cout << "Could not create image!" << endl;
+      // throw Exception("Couldn't create the parametric surface's image.");
     }
+    _img_ps[index] = _image_of_ps;
+    if (!_image_of_ps->UpdateVertexBufferObjects(usage_flag)) {
+      cout << "Could not create the vertex buffer object of the parametric "
+              "surface!"
+           << endl;
+    }
+  } else {
+    _image_of_ps = _img_ps[index];
   }
-  _animal.UnmapVertexBuffer();
-  _animal.UnmapNormalBuffer();
-
-  updateGL();
 }
 
+// void
+// GLWidget::drawFirst()
+//{
+//  glDisable(GL_LIGHTING);
+
+//  glColor3f(1.0f, 0.0f, 0.0f);
+//  _img_pc[_ps_selected]->RenderDerivatives(0, GL_LINE_STRIP);
+//  glPointSize(5.0f);
+//  glColor3f(0.0f, 0.5f, 0.0f);
+//  _img_pc[_ps_selected]->RenderDerivatives(1, GL_LINES);
+//  _img_pc[_ps_selected]->RenderDerivatives(1, GL_POINTS);
+
+//  glColor3f(0.0f, 0.0f, 1.0f);
+//  _img_pc[_ps_selected]->RenderDerivatives(2, GL_LINES);
+//  _img_pc[_ps_selected]->RenderDerivatives(2, GL_LINES);
+//  glPointSize(1.0f);
+//}
+
+// void
+// GLWidget::initializeModel()
+//{
+
+//  glewInit();
+//  if (_model.LoadFromOFF("../Models/sphere.off", true)) {
+//    if (_model.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)) {
+//      _mangle = 0.0;
+//      _timer->start();
+//    }
+//  } else {
+//    cout << " cant find the animal OFF file " << endl;
+//  }
+//}
+// void
+// GLWidget::drawModel()
+//{
+
+//  glPushMatrix();
+//  glEnable(GL_LIGHTING);
+//  // glRotatef(_mangle, 1.0, 1.0, 1.0);
+//  _shaders[_selectedShader].Enable();
+//  MatFBRuby.Apply();
+//  _model.Render();
+//  _shaders[_selectedShader].Disable();
+//  glDisable(GL_LIGHTING);
+//  glPopMatrix();
+//}
+
+// void
+// GLWidget::_animate()
+//{
+//  GLfloat* vertex = _model.MapVertexBuffer(GL_READ_WRITE);
+//  GLfloat* normal = _model.MapNormalBuffer(GL_READ_ONLY);
+
+//  _angle += DEG_TO_RADIAN;
+//  if (_angle >= TWO_PI)
+//    _angle -= TWO_PI;
+
+//  GLfloat scale = sin(_angle) / 3000.0;
+//  for (GLuint i = 0; i < _model.VertexCount(); i++) {
+//    for (GLuint coordinate = 0; coordinate < 3;
+//         coordinate++, vertex++, normal++) {
+//      *vertex += scale * (*normal);
+//    }
+//  }
+//  _model.UnmapVertexBuffer();
+//  _model.UnmapNormalBuffer();
+
+//  updateGL();
+//}
+
+// void
+// GLWidget::_rotateModel()
+//{
+//  _mangle += 1.0;
+
+//  if (_mangle > 360.0) {
+//    _mangle -= 360.0;
+//  }
+
+//  updateGL();
+//}
+
 void
-GLWidget::_rotateModel()
-{
-  _mangle += 1.0;
-
-  if (_mangle > 360.0) {
-    _mangle -= 360.0;
-  }
-
-  updateGL();
-}
-
-void
-GLWidget::initalizeSurface()
+GLWidget::initialize_parametric_surface(int index)
 {
   _ps_count = 5;
-  _pointCount = 700;
-  _ps.ResizeColumns(_ps_count);
-
-  TriangularMatrix<ParametricSurface3::PartialDerivative> derivative(3);
-  derivative(0, 0) = firstSurface::d00;
-  derivative(1, 0) = firstSurface::d10;
-  derivative(1, 1) = firstSurface::d01;
-  _ps[0] = new ParametricSurface3(derivative,
-                                  firstSurface::u_min,
-                                  firstSurface::u_max,
-                                  firstSurface::v_min,
-                                  firstSurface::v_max);
-
-  derivative(0, 0) = secondSurface::d00;
-  derivative(1, 0) = secondSurface::d10;
-  derivative(1, 1) = secondSurface::d01;
-  _ps[1] = new ParametricSurface3(derivative,
-                                  secondSurface::u_min,
-                                  secondSurface::u_max,
-                                  secondSurface::v_min,
-                                  secondSurface::v_max);
-
-  derivative(0, 0) = thirdSurface::d00;
-  derivative(1, 0) = thirdSurface::d10;
-  derivative(1, 1) = thirdSurface::d01;
-  _ps[2] = new ParametricSurface3(derivative,
-                                  thirdSurface::u_min,
-                                  thirdSurface::u_max,
-                                  thirdSurface::v_min,
-                                  thirdSurface::v_max);
-
-  derivative(0, 0) = forthSurface::d00;
-  derivative(1, 0) = forthSurface::d10;
-  derivative(1, 1) = forthSurface::d01;
-  _ps[3] = new ParametricSurface3(derivative,
-                                  forthSurface::u_min,
-                                  forthSurface::u_max,
-                                  forthSurface::v_min,
-                                  forthSurface::v_max);
-
-  derivative(0, 0) = fifthSurface::d00;
-  derivative(1, 0) = fifthSurface::d10;
-  derivative(1, 1) = fifthSurface::d01;
-  _ps[4] = new ParametricSurface3(derivative,
-                                  fifthSurface::u_min,
-                                  fifthSurface::u_max,
-                                  fifthSurface::v_min,
-                                  fifthSurface::v_max);
-
   _img_ps.ResizeColumns(_ps_count);
 
-  for (GLuint i = 0; i < _ps_count; i++) {
-    if (_ps[i]) {
-      _img_ps[i] = _ps[i]->GenerateImage(
-        _pointCount, _pointCount); // test letezik e a kep vagy se
-    }
-    if (_img_ps[i]) {
-      _img_ps[i]->UpdateVertexBufferObjects();
+  TriangularMatrix<ParametricSurface3::PartialDerivative> derivative(3);
+  switch (index) {
+    case 0:
+      derivative(0, 0) = firstSurface::d00;
+      derivative(1, 0) = firstSurface::d10;
+      derivative(1, 1) = firstSurface::d01;
+      _ps = new ParametricSurface3(derivative,
+                                   firstSurface::u_min,
+                                   firstSurface::u_max,
+                                   firstSurface::v_min,
+                                   firstSurface::v_max);
+      break;
+    case 1:
+      derivative(0, 0) = secondSurface::d00;
+      derivative(1, 0) = secondSurface::d10;
+      derivative(1, 1) = secondSurface::d01;
+      _ps = new ParametricSurface3(derivative,
+                                   secondSurface::u_min,
+                                   secondSurface::u_max,
+                                   secondSurface::v_min,
+                                   secondSurface::v_max);
+      break;
+    case 2:
+      derivative(0, 0) = thirdSurface::d00;
+      derivative(1, 0) = thirdSurface::d10;
+      derivative(1, 1) = thirdSurface::d01;
+      _ps = new ParametricSurface3(derivative,
+                                   thirdSurface::u_min,
+                                   thirdSurface::u_max,
+                                   thirdSurface::v_min,
+                                   thirdSurface::v_max);
+      break;
+    case 3:
+      derivative(0, 0) = forthSurface::d00;
+      derivative(1, 0) = forthSurface::d10;
+      derivative(1, 1) = forthSurface::d01;
+      _ps = new ParametricSurface3(derivative,
+                                   forthSurface::u_min,
+                                   forthSurface::u_max,
+                                   forthSurface::v_min,
+                                   forthSurface::v_max);
+      break;
+    case 4:
+      derivative(0, 0) = fifthSurface::d00;
+      derivative(1, 0) = fifthSurface::d10;
+      derivative(1, 1) = fifthSurface::d01;
+      _ps = new ParametricSurface3(derivative,
+                                   fifthSurface::u_min,
+                                   fifthSurface::u_max,
+                                   fifthSurface::v_min,
+                                   fifthSurface::v_max);
+      break;
+  }
+  //  _img_ps.ResizeColumns(_ps_count);
+
+  //  for (GLuint i = 0; i < _ps_count; i++) {
+  //    if (_ps[i]) {
+  //      _img_ps[i] = _ps[i]->GenerateImage(
+  //        _pointCount, _pointCount); // test letezik e a kep vagy se
+  //    }
+  //    if (_img_ps[i]) {
+  //      _img_ps[i]->UpdateVertexBufferObjects();
+  //    }
+  //  }
+
+  //  _ps_selected = 0;
+}
+
+void
+GLWidget::init_models()
+{
+  if (_elephant_model.LoadFromOFF("../Models/elephant.off", true)) {
+    if (_elephant_model.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)) {
+      _angle = 0.0;
+      //_timer->start();
     }
   }
 
-  _ps_selected = 0;
+  if (_mouse_model.LoadFromOFF("../Models/mouse.off", true)) {
+    if (_mouse_model.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)) {
+      _angle = 0.0;
+      //_timer->start();
+    }
+  }
+
+  if (_sphere_model.LoadFromOFF("../Models/sphere.off", true)) {
+    if (_sphere_model.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)) {
+      _angle = 0.0;
+      //_timer->start();
+    }
+  }
 }
 
 void
@@ -792,6 +959,26 @@ GLWidget::initializeCyclicCurve()
     cout << " Error, cyclic curve, cannot update VBO s" << endl;
   }
 }
+
+void
+GLWidget::set_type_index(int index)
+{
+  cout << _type_index << endl;
+  _type_index = index;
+  _combo_index = 0;
+  updateGL();
+}
+
+void
+GLWidget::set_combo_index(int index)
+{
+  cout << index << endl;
+  if (index > -1) {
+    _combo_index = index;
+    updateGL();
+  }
+}
+
 void
 GLWidget::renderCyclicCurve()
 {

@@ -40,6 +40,14 @@ MainWindow::MainWindow(QWidget* parent)
 
   // creating a signal slot mechanism between the rendering context and the side
   // widget
+  connect(_side_widget->type_box,
+          SIGNAL(currentIndexChanged(int)),
+          _side_widget,
+          SLOT(set_page(int)));
+  connect(_side_widget->type_box,
+          SIGNAL(currentIndexChanged(int)),
+          _gl_widget,
+          SLOT(set_type_index(int)));
   connect(_side_widget->rotate_x_slider,
           SIGNAL(valueChanged(int)),
           _gl_widget,
@@ -70,11 +78,18 @@ MainWindow::MainWindow(QWidget* parent)
           SIGNAL(valueChanged(double)),
           _gl_widget,
           SLOT(set_trans_z(double)));
-  connect(_side_widget->pcCombo,
+  connect(_side_widget->comboBox,
           SIGNAL(currentIndexChanged(int)),
           _gl_widget,
-          SLOT(setParametricCurve(int)));
-
+          SLOT(set_combo_index(int)));
+  connect(_side_widget->comboBox_2,
+          SIGNAL(currentIndexChanged(int)),
+          _gl_widget,
+          SLOT(set_combo_index(int)));
+  connect(_side_widget->comboBox_3,
+          SIGNAL(currentIndexChanged(int)),
+          _gl_widget,
+          SLOT(set_combo_index(int)));
   connect(_side_widget->button1,
           SIGNAL(clicked()),
           _gl_widget,

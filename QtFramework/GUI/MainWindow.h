@@ -21,7 +21,7 @@ private:
 
 public:
   // special and default constructor
-  MainWindow(QWidget* parent = 0);
+  explicit MainWindow(QWidget* parent = nullptr);
 
 private slots:
   // private event handling methods/slots

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>289</width>
-    <height>727</height>
+    <height>855</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,8 +40,8 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>3</x>
-      <y>21</y>
+      <x>0</x>
+      <y>20</y>
       <width>261</width>
       <height>381</height>
      </rect>
@@ -217,38 +217,46 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_8">
-       <property name="text">
-        <string>WhichCurve</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QComboBox" name="pcCombo">
+     <item row="8" column="0" colspan="2">
+      <widget class="QComboBox" name="type_box">
        <item>
         <property name="text">
-         <string>FirstCurve</string>
+         <string>Parametric Curves</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>SecondCurve</string>
+         <string>Parametric Surfaces</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>vivianCurve</string>
+         <string>Models</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>ThirdCurve</string>
+         <string>Cyclic Curves</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>roseCurve</string>
+         <string>Bicubic Spline</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Bicubic Spline Arc</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Patch Manager</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>My Patch</string>
         </property>
        </item>
       </widget>
@@ -634,6 +642,117 @@
    <property name="singleStep">
     <double>0.100000000000000</double>
    </property>
+  </widget>
+  <widget class="QStackedWidget" name="stackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>670</y>
+     <width>241</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <widget class="QWidget" name="page">
+    <widget class="QComboBox" name="comboBox">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>20</y>
+       <width>241</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>First Curve</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Second Curve</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Vivian Curve</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Third Curve</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Rose Curve</string>
+      </property>
+     </item>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_2">
+    <widget class="QComboBox" name="comboBox_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>221</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Surface 1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Surface 2</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Surface 3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Surface 4</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Surface 5</string>
+      </property>
+     </item>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_3">
+    <widget class="QComboBox" name="comboBox_3">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>10</y>
+       <width>72</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Elephant</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mouse</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Sphere</string>
+      </property>
+     </item>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <resources/>
