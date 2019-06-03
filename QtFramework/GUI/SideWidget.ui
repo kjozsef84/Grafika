@@ -623,7 +623,7 @@
      <x>20</x>
      <y>670</y>
      <width>241</width>
-     <height>80</height>
+     <height>161</height>
     </rect>
    </property>
    <widget class="QWidget" name="page">
@@ -725,6 +725,75 @@
        <string>Sphere</string>
       </property>
      </item>
+    </widget>
+    <widget class="QDoubleSpinBox" name="scale_factor_sb">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>50</y>
+       <width>64</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="smoothing_sb">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>80</y>
+       <width>64</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="shading_sb">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>110</y>
+       <width>64</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>50</y>
+       <width>55</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Scale factor</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_19">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>90</y>
+       <width>55</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Smoothing</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>120</y>
+       <width>55</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Shading</string>
+     </property>
     </widget>
    </widget>
   </widget>

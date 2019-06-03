@@ -23,6 +23,7 @@ public:
   myPatchManager(int, int);
   ~myPatchManager();
   GLvoid generateImage();
+  GLvoid generateImageAux();
   GLvoid renderImages();
   GLvoid renderControlPoints();
   DCoordinate3 getPoint(int, int);

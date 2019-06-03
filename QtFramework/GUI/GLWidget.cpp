@@ -17,6 +17,10 @@ GLWidget::GLWidget(QWidget* parent, const QGLFormat& format)
   //_timer->setInterval(10);
   // connect(_timer, SIGNAL(timeout()), this, SLOT(_animate()));
   // connect(_timer, SIGNAL(timeout()), this, SLOT(_rotateModel()));
+
+  scale_factor_parameter = 4.0f;
+  smoothing_parameter = 2.0f;
+  shading_parameter = 1.0f;
 }
 
 GLWidget::~GLWidget()
@@ -143,8 +147,8 @@ GLWidget::initializeGL()
 
   //------------------------------------------------------------------
 
-  homeworkNumber = 1;
-  _type_index = 0;
+  homeworkNumber = 6;
+  _type_index = 6;
   _combo_index = 0;
   _pc_count = 5;
   _img_pc.ResizeColumns(_pc_count);
@@ -161,6 +165,7 @@ GLWidget::initializeGL()
   initializeMyPatch();
   initializePatchManager();
   set_displayed_image();
+  initShader();
   //------------------------------------------------------------------
   //  switch (homeworkNumber) {
   //    case 1:
@@ -213,179 +218,6 @@ GLWidget::paintGL()
   // render your geometry (this is oldest OpenGL rendering technique, later we
   // will use some advanced methods)
 
-  //  switch (homeworkNumber) {
-  //    case 1:
-  //      drawFirst();
-  //      break;
-  //    case 2:
-  //      drawAnimal();
-  //      break;
-  //    case 3:
-  //      drawSurface();
-  //      break;
-  //    case 4:
-  //      renderCyclicCurve();
-  //      break;
-  //    case 5:
-  //      renderBicubicSpline();
-  //      break;
-  //    case 6:
-  //      renderBicubicSplineArc3();
-  //      break;
-  //    case 7:
-  //      renderPatchManager();
-  //      break;
-  //    case 8:
-  //      renderMyPatch();
-  //      break;
-  //  }
-  /*
-              GLuint pointCount = 200, derCount = 1;
-              GLfloat du = 4.0 * PI / ( pointCount ), u = -2 * PI;
-              Matrix<DCoordinate3> derivatives(derCount+1, pointCount+1);
-
-
-
-              for( GLuint i = 0; i <= pointCount; i++ ){
-                DCoordinate3 & a =  derivatives(0,i);
-                a[0] = u * cos(u);
-                a[1] = u* sin(u);
-                a[2] = u;
-
-                DCoordinate3 & b =  derivatives(1,i);
-                b[0] = cos(u) - u * sin(u);
-                b[1] = sin(u) + u * cos(u);
-                b[2] = 1;
-           5     u+=du;
-
-              }
-  */
-  /*
-              for( GLuint i = 0; i < pointCount; i++ ){
-                DCoordinate3 & a =  derivatives(1,i);
-                a[0] = cos(u) - u * sin(u);
-                a[1] = sin(u) + u * cos(u);
-                a[2] = 1;
-              }
-  */
-
-  /*
-              GenericCurve3 gc3(derivatives,GL_DYNAMIC_DRAW);
-              gc3.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW);
-
-              glPointSize(10.0f);
-              glColor3f(1.0f,0,0);
-              gc3.RenderDerivatives(0,GL_POINTS);
-              glColor3f(0.0f,0.0f,1.0f);
-              gc3.RenderDerivatives(1,GL_LINES);
-
-              gc3.DeleteVertexBufferObjects();*/
-  /*
-              glColor3f(1.0f, 1.0f, 1.0f);
-              glBegin(GL_LINES);
-                  glVertex3f(0.0f, 0.0f, 0.0f);
-                  glVertex3f(1.1f, 0.0f, 0.0f);
-
-                  glVertex3f(0.0f, 0.0f, 0.0f);
-                  glVertex3f(0.0f, 1.1f, 0.0f);
-
-                  glVertex3f(0.0f, 0.0f, 0.0f);
-                  glVertex3f(0.0f, 0.0f, 1.1f);
-              glEnd();
-
-              glBegin(GL_TRIANGLES);
-                  // attributes
-                  glColor3f(1.0f, 0.0f, 0.0f);
-                  // associated with position
-                  glVertex3f(1.0f, 0.0f, 0.0f);
-
-                  // attributes
-                  glColor3f(0.0, 1.0, 0.0);
-                  // associated with position
-                  glVertex3f(0.0, 1.0, 0.0);
-
-                  // attributes
-                  glColor3f(0.0f, 0.0f, 1.0f);
-                  // associated with position
-                  glVertex3f(0.0f, 0.0f, 1.0f);
-              glEnd();
-
-  */
-  /*
-           GLuint seg_count = 100;
-           GLuint vert_count = 2 * seg_count;
-           GLfloat color = 1/seg_count;
-
-
-           GLfloat du = 4.0 * PI / ( vert_count ), u = -2 * PI;
-
-
-          vector<Vertex> points(vert_count);
-
-          for( vector<Vertex>::iterator it = points.begin(); it < points.end();
-     ++it){ it->x =  u * cos(u); it->y = u *sin(u); it->z = u; u+=du; cout << u
-     << endl;
-          }
-
-          glBegin(GL_LINE_STRIP);
-          glColor3i(1,0,0);
-          for( vector<Vertex>::iterator it = points.begin(); it < points.end();
-     ++it ){ glColor3f(1.0f, 0.0f, 1.0f); glVertex3fv(&it->x);
-          }
-
-          glEnd();
-
-  */
-  /*
-
-          GLuint point_count = 200;
-          GLuint bufferID, curvePointByteSize = 3 * point_count *
-     sizeof(GLfloat); GLfloat * coordinate; GLfloat du = 4.0 * PI / (
-     point_count ), u = -2 * PI;
-
-
-          glGenBuffers(1, &bufferID);
-          if ( ! bufferID ){
-              cout << " hiba 1 " << endl;
-
-          }
-          glBindBuffer(GL_ARRAY_BUFFER, bufferID);
-          glBufferData(GL_ARRAY_BUFFER, curvePointByteSize, 0, GL_DYNAMIC_DRAW);
-          coordinate = (GLfloat * ) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-          if ( !coordinate ){
-              cout << " hiba 2 " << endl;
-          }
-          for( GLuint i = 0; i < point_count; i++ ){
-              *coordinate = (GLfloat) (u*cos(u));
-              coordinate++;
-
-              *coordinate = (GLfloat) (u*sin(u));
-              coordinate++;
-              *coordinate = (GLfloat) u;
-              coordinate++;
-               u+=du;
-               cout << u << endl;
-
-          }
-
-          glUnmapBuffer(GL_ARRAY_BUFFER);
-          glBindBuffer(GL_ARRAY_BUFFER,0);
-
-          glEnableClientState(GL_VERTEX_ARRAY);
-          glBindBuffer(GL_ARRAY_BUFFER, bufferID);
-              glColor3f(1.0f,0,0);
-              glVertexPointer(3, GL_FLOAT, 0, (const GLvoid*)0);
-              glDrawArrays(GL_LINE_STRIP, 0, point_count);
-
-              glPointSize(10.0f);
-              glColor3f(0.0f,0.0f,1.0f);
-              glDrawArrays(GL_POINTS, 0, point_count);
-
-          glBindBuffer(GL_ARRAY_BUFFER,0);
-          glDisableClientState(GL_VERTEX_ARRAY);
-
-  */
   set_displayed_image();
   // pops the current matrix stack, replacing the current matrix with the one
   // below it on the stack, i.e., the original model view matrix is restored
@@ -501,11 +333,21 @@ GLWidget::show_parametric_surface()
 void
 GLWidget::show_model()
 {
-  MatFBBrass.Apply();
+
+  if (_selectedShader == 1) {
+    _shaders[1].Enable();
+    _shaders[1].SetUniformVariable1f("scale_factor", scale_factor_parameter);
+    _shaders[1].SetUniformVariable1f("smoothing", smoothing_parameter);
+    _shaders[1].SetUniformVariable1f("shading", shading_parameter);
+    _shaders[1].Disable();
+  }
 
   glEnable(GL_LIGHTING);
   glEnable(GL_NORMALIZE);
   glEnable(GL_LIGHT0);
+  _shaders[_selectedShader].Enable(GL_TRUE);
+  MatFBBrass.Apply();
+
   //_dl->Enable();
   switch (_combo_index) {
     case 0:
@@ -519,6 +361,7 @@ GLWidget::show_model()
       break;
   }
   //  _dl->Disable();
+  _shaders[_selectedShader].Disable();
   glDisable(GL_LIGHT0);
   glDisable(GL_LIGHTING);
   glDisable(GL_NORMALIZE);
@@ -809,10 +652,12 @@ GLWidget::init_models()
 void
 GLWidget::drawSurface()
 {
+  _shaders[_selectedShader].Enable(GL_TRUE);
   glEnable(GL_LIGHTING);
   MatFBRuby.Apply();
   _img_ps[_ps_selected]->Render();
   glDisable(GL_LIGHTING);
+  _shaders[_selectedShader].Disable();
 }
 
 void
@@ -892,7 +737,6 @@ GLWidget::set_combo_index(int index)
 void
 GLWidget::renderCyclicCurve()
 {
-  glDisable(GL_LIGHTING);
 
   glPointSize(10.0f);
   glColor3f(1.0f, 1.0f, 0.0f);
@@ -908,7 +752,7 @@ GLWidget::renderCyclicCurve()
   _image_of_cyc3->RenderDerivatives(1, GL_LINES);
   glColor3f(1.0f, 0.8f, 1.0f);
   _image_of_cyc3->RenderDerivatives(2, GL_LINES);
-  glPointSize(3.0f);
+  glPointSize(1.0f);
 }
 
 void
@@ -983,7 +827,7 @@ GLWidget::renderBicubicSpline()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glPushMatrix();
   glEnable(GL_LIGHTING);
-
+  glEnable(GL_LIGHT0);
   if (_before_interpolation) {
     MatFBRuby.Apply();
     if (!_before_interpolation->Render())
@@ -1007,7 +851,7 @@ GLWidget::renderBicubicSpline()
       cout << " Error, after interpolation " << endl;
   }
   */
-
+  glDisable(GL_LIGHT0);
   glDisable(GL_LIGHTING);
   glColor3f(0.0, 1.0, 0.0);
   for (GLuint i = 0; i < _ulineCount; i++) {
@@ -1027,13 +871,10 @@ GLWidget::renderBicubicSpline()
     }
   }
 
-  glDisable(GL_LIGHTING);
-
   glPointSize(5.0f);
   if (!_after_interpolation->Render(GL_POINTS))
     cout << "Error, can't render the after interpolation " << endl;
   glPointSize(1.0f);
-  glEnable(GL_LIGHTING);
   glPopMatrix();
 }
 
@@ -1048,7 +889,6 @@ GLWidget::initializeBicubicSplineArc3()
 void
 GLWidget::renderBicubicSplineArc3()
 {
-  glDisable(GL_LIGHTING);
   glPointSize(10.0);
   glBegin(GL_POINTS);
   if (_open && _point_number <= manager->getPointNumber()) {
@@ -1135,10 +975,24 @@ GLWidget::initializePatchManager()
 GLvoid
 GLWidget::renderPatchManager()
 {
-
   paintPoint(_patchManager->getPoint(uIndex, vIndex));
   _patchManager->renderControlPoints();
+
+  if (_selectedShader == 1) {
+    _shaders[1].Enable();
+    _shaders[1].SetUniformVariable1f("scale_factor", scale_factor_parameter);
+    _shaders[1].SetUniformVariable1f("smoothing", smoothing_parameter);
+    _shaders[1].SetUniformVariable1f("shading", shading_parameter);
+    _shaders[1].Disable();
+  }
+
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  _shaders[_selectedShader].Enable(GL_TRUE);
   _patchManager->renderImages();
+  _shaders[_selectedShader].Disable();
+  glDisable(GL_LIGHT0);
+  glDisable(GL_LIGHTING);
 }
 GLvoid
 GLWidget::setPatchData()
@@ -1217,10 +1071,12 @@ GLWidget::renderControlNet()
   glEnable(GL_LIGHTING);
 }
 
+//--------------- shaders --------------------------------
+
 void
 GLWidget::initShader()
 {
-  _selectedShader = 2;
+  _selectedShader = 0;
   _shaders.ResizeColumns(4);
 
   try {
@@ -1264,6 +1120,27 @@ void
 GLWidget::setShaderNumber(int index)
 {
   _selectedShader = index;
+  updateGL();
+}
+
+void
+GLWidget::setScaleFactor(double scale_factor)
+{
+  this->scale_factor_parameter = (float)scale_factor;
+  updateGL();
+}
+
+void
+GLWidget::setSmoothing(double smoothing)
+{
+  this->smoothing_parameter = (float)smoothing;
+  updateGL();
+}
+
+void
+GLWidget::setShading(double shading)
+{
+  this->shading_parameter = (float)shading;
   updateGL();
 }
 
@@ -1315,12 +1192,10 @@ GLvoid
 GLWidget::paintPoint(DCoordinate3 point)
 {
   glPointSize(12);
-  glDisable(GL_LIGHTING);
   glBegin(GL_POINTS);
   glColor3f(0, 1, 1);
   glVertex3f(point.x(), point.y(), point.z());
   glEnd();
-  glEnable(GL_LIGHTING);
   glPointSize(2);
 }
 
@@ -1333,23 +1208,29 @@ GLWidget::changePatchPoint()
 void
 GLWidget::setPatchX(double x)
 {
-  patchPoint[0] = x;
-  _patchManager->changeControllPoint(uIndex, vIndex, patchPoint);
-  updateGL();
+  if (patchPoint[0] != x) {
+    patchPoint[0] = x;
+    _patchManager->changeControllPoint(uIndex, vIndex, patchPoint);
+    updateGL();
+  }
 }
 void
 GLWidget::setPatchY(double y)
 {
-  patchPoint[1] = y;
-  _patchManager->changeControllPoint(uIndex, vIndex, patchPoint);
-  updateGL();
+  if (patchPoint[1] != y) {
+    patchPoint[1] = y;
+    _patchManager->changeControllPoint(uIndex, vIndex, patchPoint);
+    updateGL();
+  }
 }
 void
 GLWidget::setPatchZ(double z)
 {
-  patchPoint[2] = z;
-  _patchManager->changeControllPoint(uIndex, vIndex, patchPoint);
-  updateGL();
+  if (patchPoint[2] != z) {
+    patchPoint[2] = z;
+    _patchManager->changeControllPoint(uIndex, vIndex, patchPoint);
+    updateGL();
+  }
 }
 
 GLvoid
@@ -1362,10 +1243,22 @@ GLWidget::initializeMyPatch()
 GLvoid
 GLWidget::renderMyPatch()
 {
+
   myOriginalPatch->renderControlPoints();
+
+  if (_selectedShader == 1) {
+    _shaders[1].Enable();
+    _shaders[1].SetUniformVariable1f("scale_factor", scale_factor_parameter);
+    _shaders[1].SetUniformVariable1f("smoothing", smoothing_parameter);
+    _shaders[1].SetUniformVariable1f("shading", shading_parameter);
+    _shaders[1].Disable();
+  }
+
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+  _shaders[_selectedShader].Enable(GL_TRUE);
   myOriginalPatch->renderImages();
+  _shaders[_selectedShader].Disable();
   glDisable(GL_LIGHT0);
   glDisable(GL_LIGHTING);
 }

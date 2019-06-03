@@ -97,6 +97,12 @@ private:
   RowMatrix<GenericCurve3*>* uLines;
   RowMatrix<GenericCurve3*>* vLines;
 
+  // ------------- shader uniform variables -------------------
+
+  GLfloat scale_factor_parameter;
+  GLfloat smoothing_parameter;
+  GLfloat shading_parameter;
+
   // -------------  Patches
 
   myPatchManager* _patchManager = nullptr;
@@ -161,6 +167,13 @@ public slots:
   void show_model();
   void show_parametric_surface();
   void show_parametric_curve();
+
+  //------------- set uniform variables -------------------
+
+  void setScaleFactor(double);
+  void setSmoothing(double);
+  void setShading(double);
+
 signals:
   void xPointChanged(double);
   void yPointChanged(double);

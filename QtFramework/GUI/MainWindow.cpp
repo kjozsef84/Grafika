@@ -174,6 +174,20 @@ MainWindow::MainWindow(QWidget* parent)
           SIGNAL(valueChanged(double)),
           _gl_widget,
           SLOT(setPatchZ(double)));
+  connect(_side_widget->scale_factor_sb,
+          SIGNAL(valueChanged(double)),
+          _gl_widget,
+          SLOT(setScaleFactor(double)));
+
+  connect(_side_widget->smoothing_sb,
+          SIGNAL(valueChanged(double)),
+          _gl_widget,
+          SLOT(setSmoothing(double)));
+
+  connect(_side_widget->shading_sb,
+          SIGNAL(valueChanged(double)),
+          _gl_widget,
+          SLOT(setShading(double)));
 }
 
 //--------------------------------
