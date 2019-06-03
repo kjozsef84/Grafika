@@ -265,6 +265,7 @@ myPatchManager::renderImages()
 {
 
   glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
   MatFBSilver.Apply();
 
   for (GLuint i = 0; i < rowCount; i++) {
@@ -277,6 +278,7 @@ myPatchManager::renderImages()
       }
     }
   }
+  glDisable(GL_LIGHT0);
   glDisable(GL_LIGHTING);
 }
 

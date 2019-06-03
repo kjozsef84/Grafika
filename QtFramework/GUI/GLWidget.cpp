@@ -157,6 +157,9 @@ GLWidget::initializeGL()
     _img_ps[i] = nullptr;
   }
   init_models();
+  initializeBicubicSplineArc3();
+  initializeMyPatch();
+  initializePatchManager();
   set_displayed_image();
   //------------------------------------------------------------------
   //  switch (homeworkNumber) {
@@ -420,14 +423,12 @@ void
 GLWidget::set_displayed_image()
 {
   //_timer->stop();
-  cout << "Type index" << _type_index << endl;
   switch (_type_index) {
     case 0:
       switch_parametric_curve(_combo_index);
       show_parametric_curve();
       break;
     case 1:
-      cout << _combo_index << endl;
       switch_parametric_surface(_combo_index);
       show_parametric_surface();
       break;
@@ -447,21 +448,13 @@ GLWidget::set_displayed_image()
       renderBicubicSpline();
       break;
     case 5:
-      if (!manager) {
-        initializeBicubicSplineArc3();
-      }
+
       renderBicubicSplineArc3();
       break;
     case 6:
-      if (!_patchManager) {
-        initializePatchManager();
-      }
       renderPatchManager();
       break;
     case 7:
-      if (!myOriginalPatch) {
-        initializeMyPatch();
-      }
       renderMyPatch();
       break;
     default:
@@ -493,14 +486,15 @@ void
 GLWidget::show_parametric_surface()
 {
   //_dl->Enable();
-  // glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
 
   if (_image_of_ps) {
     MatFBBrass.Apply();
     _image_of_ps->Render();
   }
-
-  // glDisable(GL_LIGHTING);
+  glDisable(GL_LIGHT0);
+  glDisable(GL_LIGHTING);
   //_dl->Disable();
 }
 
@@ -509,9 +503,9 @@ GLWidget::show_model()
 {
   MatFBBrass.Apply();
 
-  // glEnable(GL_LIGHTING);
-  // glEnable(GL_NORMALIZE);
-  //        glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHTING);
+  glEnable(GL_NORMALIZE);
+  glEnable(GL_LIGHT0);
   //_dl->Enable();
   switch (_combo_index) {
     case 0:
@@ -525,9 +519,9 @@ GLWidget::show_model()
       break;
   }
   //  _dl->Disable();
-
-  //  glDisable(GL_LIGHTING);
-  //  glDisable(GL_NORMALIZE);
+  glDisable(GL_LIGHT0);
+  glDisable(GL_LIGHTING);
+  glDisable(GL_NORMALIZE);
 }
 
 void
@@ -713,88 +707,6 @@ GLWidget::switch_parametric_surface(int index)
   }
 }
 
-// void
-// GLWidget::drawFirst()
-//{
-//  glDisable(GL_LIGHTING);
-
-//  glColor3f(1.0f, 0.0f, 0.0f);
-//  _img_pc[_ps_selected]->RenderDerivatives(0, GL_LINE_STRIP);
-//  glPointSize(5.0f);
-//  glColor3f(0.0f, 0.5f, 0.0f);
-//  _img_pc[_ps_selected]->RenderDerivatives(1, GL_LINES);
-//  _img_pc[_ps_selected]->RenderDerivatives(1, GL_POINTS);
-
-//  glColor3f(0.0f, 0.0f, 1.0f);
-//  _img_pc[_ps_selected]->RenderDerivatives(2, GL_LINES);
-//  _img_pc[_ps_selected]->RenderDerivatives(2, GL_LINES);
-//  glPointSize(1.0f);
-//}
-
-// void
-// GLWidget::initializeModel()
-//{
-
-//  glewInit();
-//  if (_model.LoadFromOFF("../Models/sphere.off", true)) {
-//    if (_model.UpdateVertexBufferObjects(GL_DYNAMIC_DRAW)) {
-//      _mangle = 0.0;
-//      _timer->start();
-//    }
-//  } else {
-//    cout << " cant find the animal OFF file " << endl;
-//  }
-//}
-// void
-// GLWidget::drawModel()
-//{
-
-//  glPushMatrix();
-//  glEnable(GL_LIGHTING);
-//  // glRotatef(_mangle, 1.0, 1.0, 1.0);
-//  _shaders[_selectedShader].Enable();
-//  MatFBRuby.Apply();
-//  _model.Render();
-//  _shaders[_selectedShader].Disable();
-//  glDisable(GL_LIGHTING);
-//  glPopMatrix();
-//}
-
-// void
-// GLWidget::_animate()
-//{
-//  GLfloat* vertex = _model.MapVertexBuffer(GL_READ_WRITE);
-//  GLfloat* normal = _model.MapNormalBuffer(GL_READ_ONLY);
-
-//  _angle += DEG_TO_RADIAN;
-//  if (_angle >= TWO_PI)
-//    _angle -= TWO_PI;
-
-//  GLfloat scale = sin(_angle) / 3000.0;
-//  for (GLuint i = 0; i < _model.VertexCount(); i++) {
-//    for (GLuint coordinate = 0; coordinate < 3;
-//         coordinate++, vertex++, normal++) {
-//      *vertex += scale * (*normal);
-//    }
-//  }
-//  _model.UnmapVertexBuffer();
-//  _model.UnmapNormalBuffer();
-
-//  updateGL();
-//}
-
-// void
-// GLWidget::_rotateModel()
-//{
-//  _mangle += 1.0;
-
-//  if (_mangle > 360.0) {
-//    _mangle -= 360.0;
-//  }
-
-//  updateGL();
-//}
-
 void
 GLWidget::initialize_parametric_surface(int index)
 {
@@ -963,7 +875,6 @@ GLWidget::initializeCyclicCurve()
 void
 GLWidget::set_type_index(int index)
 {
-  cout << _type_index << endl;
   _type_index = index;
   _combo_index = 0;
   updateGL();
@@ -972,7 +883,6 @@ GLWidget::set_type_index(int index)
 void
 GLWidget::set_combo_index(int index)
 {
-  cout << index << endl;
   if (index > -1) {
     _combo_index = index;
     updateGL();
@@ -1117,14 +1027,14 @@ GLWidget::renderBicubicSpline()
     }
   }
 
-  glEnable(GL_LIGHTING);
+  glDisable(GL_LIGHTING);
+
   glPointSize(5.0f);
   if (!_after_interpolation->Render(GL_POINTS))
     cout << "Error, can't render the after interpolation " << endl;
   glPointSize(1.0f);
-
+  glEnable(GL_LIGHTING);
   glPopMatrix();
-  glDisable(GL_LIGHTING);
 }
 
 void
@@ -1152,7 +1062,10 @@ GLWidget::renderBicubicSplineArc3()
   }
   glEnd();
   glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
   manager->Render();
+  glDisable(GL_LIGHT0);
+  glDisable(GL_LIGHTING);
 }
 
 void
@@ -1185,18 +1098,24 @@ void
 GLWidget::setX(double x)
 {
   _points[0] = x;
+  manager->ChangeControllPoint(_point_number, _points);
+  updateGL();
 }
 
 void
 GLWidget::setY(double y)
 {
   _points[1] = y;
+  manager->ChangeControllPoint(_point_number, _points);
+  updateGL();
 }
 
 void
 GLWidget::setZ(double z)
 {
   _points[2] = z;
+  manager->ChangeControllPoint(_point_number, _points);
+  updateGL();
 }
 
 void
@@ -1216,6 +1135,7 @@ GLWidget::initializePatchManager()
 GLvoid
 GLWidget::renderPatchManager()
 {
+
   paintPoint(_patchManager->getPoint(uIndex, vIndex));
   _patchManager->renderControlPoints();
   _patchManager->renderImages();
@@ -1356,9 +1276,9 @@ GLWidget::setPoints()
     _points[0] = point.x();
     _points[1] = point.y();
     _points[2] = point.z();
-    emit patchXPointChanged(point.x());
-    emit patchYPointChanged(point.y());
-    emit patchZPointChanged(point.z());
+    emit xPointChanged(point.x());
+    emit yPointChanged(point.y());
+    emit zPointChanged(point.z());
   }
 }
 void
@@ -1414,22 +1334,28 @@ void
 GLWidget::setPatchX(double x)
 {
   patchPoint[0] = x;
+  _patchManager->changeControllPoint(uIndex, vIndex, patchPoint);
+  updateGL();
 }
 void
 GLWidget::setPatchY(double y)
 {
   patchPoint[1] = y;
+  _patchManager->changeControllPoint(uIndex, vIndex, patchPoint);
+  updateGL();
 }
 void
 GLWidget::setPatchZ(double z)
 {
   patchPoint[2] = z;
+  _patchManager->changeControllPoint(uIndex, vIndex, patchPoint);
+  updateGL();
 }
 
 GLvoid
 GLWidget::initializeMyPatch()
 {
-  myOriginalPatch = new originalPatch(20, 20);
+  myOriginalPatch = new originalPatch(10, 10);
   myOriginalPatch->setContolPoints();
   myOriginalPatch->generateImage();
 }
@@ -1437,7 +1363,11 @@ GLvoid
 GLWidget::renderMyPatch()
 {
   myOriginalPatch->renderControlPoints();
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
   myOriginalPatch->renderImages();
+  glDisable(GL_LIGHT0);
+  glDisable(GL_LIGHTING);
 }
 
 }

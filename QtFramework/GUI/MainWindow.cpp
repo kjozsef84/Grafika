@@ -90,10 +90,6 @@ MainWindow::MainWindow(QWidget* parent)
           SIGNAL(currentIndexChanged(int)),
           _gl_widget,
           SLOT(set_combo_index(int)));
-  connect(_side_widget->button1,
-          SIGNAL(clicked()),
-          _gl_widget,
-          SLOT(signalManagement()));
   connect(_side_widget->pointSpinBox,
           SIGNAL(valueChanged(int)),
           _gl_widget,
@@ -150,11 +146,6 @@ MainWindow::MainWindow(QWidget* parent)
           SLOT(setVIndex(int)));
 
   // -------------------      surface signal
-
-  connect(_side_widget->surfaceModifyButton,
-          SIGNAL(clicked()),
-          _gl_widget,
-          SLOT(changePatchPoint()));
 
   connect(_gl_widget,
           SIGNAL(patchYPointChanged(double)),

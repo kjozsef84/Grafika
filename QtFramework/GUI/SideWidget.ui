@@ -263,19 +263,6 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="button1">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>365</y>
-      <width>80</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Modify</string>
-    </property>
-   </widget>
    <widget class="QRadioButton" name="radioButtonOpeClosedCurve">
     <property name="geometry">
      <rect>
@@ -521,19 +508,6 @@
    </property>
    <property name="text">
     <string>V-Point</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="surfaceModifyButton">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>590</y>
-     <width>80</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Modify</string>
    </property>
   </widget>
   <widget class="QSpinBox" name="UspinBox">
