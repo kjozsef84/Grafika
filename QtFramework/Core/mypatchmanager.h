@@ -4,6 +4,8 @@
 #include "../Core/Matrices.h"
 #include "../Core/bicubicbsplinepatch.h"
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -31,5 +33,8 @@ public:
   GLint getPointCountV();
   GLvoid changeControllPoint(int, int, DCoordinate3);
   GLvoid setControlPoint(int, int, DCoordinate3);
+  GLvoid saveToFile() const;
+  GLvoid loadFromFile();
+  void generating();
 };
 }

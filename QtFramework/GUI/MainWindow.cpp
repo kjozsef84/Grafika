@@ -188,6 +188,12 @@ MainWindow::MainWindow(QWidget* parent)
           SIGNAL(valueChanged(double)),
           _gl_widget,
           SLOT(setShading(double)));
+  connect(_side_widget->myPatchIndex,
+          SIGNAL(valueChanged(int)),
+          _gl_widget,
+          SLOT(setPatchIndex(int)));
+
+
 }
 
 //--------------------------------

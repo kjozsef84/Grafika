@@ -969,6 +969,7 @@ GLvoid
 GLWidget::initializePatchManager()
 {
   _patchManager = new myPatchManager(10, 10);
+  _patchManager->loadFromFile();
   _patchManager->generateImage();
 }
 
@@ -993,6 +994,7 @@ GLWidget::renderPatchManager()
   _shaders[_selectedShader].Disable();
   glDisable(GL_LIGHT0);
   glDisable(GL_LIGHTING);
+  _patchManager->saveToFile();
 }
 GLvoid
 GLWidget::setPatchData()
@@ -1237,7 +1239,7 @@ GLvoid
 GLWidget::initializeMyPatch()
 {
   myOriginalPatch = new originalPatch(10, 10);
-  myOriginalPatch->setContolPoints();
+  myOriginalPatch->setContolPoints(myPatchIndex);
   myOriginalPatch->generateImage();
 }
 GLvoid
@@ -1262,5 +1264,11 @@ GLWidget::renderMyPatch()
   glDisable(GL_LIGHT0);
   glDisable(GL_LIGHTING);
 }
-
+void GLWidget::setPatchIndex(int index){
+    if ( index < 2 ){
+    myPatchIndex = index;
+    initializeMyPatch();
+    updateGL();
+    }
+}
 }

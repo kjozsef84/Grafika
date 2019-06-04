@@ -388,4 +388,51 @@ myPatchManager::setControlPoint(int i, int j, DCoordinate3 point)
 {
   _net(i, j) = point;
 }
+GLvoid myPatchManager::saveToFile() const{
+    ofstream f("save.txt");
+
+
+    f << _net.GetRowCount() << " " << _net.GetColumnCount() << endl;
+
+    for( int i = 0 ; i < _net.GetRowCount(); i++ ){
+        for( int j = 0 ; j < _net.GetColumnCount(); j++){
+            f << _net(i,j) << " ";
+        }
+        f << endl;
+    }
+    cout << " kiirtam file ba " << endl;
+    f.close();
+}
+GLvoid myPatchManager::loadFromFile(){
+    ifstream f("save.txt");
+
+
+    f >> rowCount >> columnCount;
+    rowCount += 3;
+    columnCount += 3;
+   generating();
+
+    for( int i = 0 ; i < _net.GetRowCount(); i++ ){
+        for( int j = 0 ; j < _net.GetColumnCount(); j++){
+            f >> _net(i,j);
+            // cout << _net(i,j) << endl;
+        }
+    }
+
+    f.close();
+}
+
+void myPatchManager::generating() {
+    int row = rowCount - 3;
+    int col = columnCount - 3;
+    // if utype, vtype
+    // ha periodik akkor + 3 amelyik iranyba
+    _net.ResizeRows(row);
+    _net.ResizeColumns(col);
+    patches.ResizeRows(rowCount);
+    patches.ResizeColumns(columnCount);
+    _imageOfPatches.ResizeRows(rowCount);
+    _imageOfPatches.ResizeColumns(columnCount);
+}
+
 }

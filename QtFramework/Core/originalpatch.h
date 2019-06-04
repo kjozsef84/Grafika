@@ -6,7 +6,7 @@ class originalPatch : public myPatchManager
 {
 public:
   originalPatch(int, int);
-  GLvoid setContolPoints();
+  GLvoid setContolPoints(int);
 };
 
 }

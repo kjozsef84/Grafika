@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>289</width>
-    <height>855</height>
+    <width>291</width>
+    <height>904</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -620,11 +620,14 @@
   <widget class="QStackedWidget" name="stackedWidget">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>670</y>
      <width>241</width>
      <height>161</height>
     </rect>
+   </property>
+   <property name="currentIndex">
+    <number>2</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QComboBox" name="comboBox">
@@ -796,6 +799,29 @@
      </property>
     </widget>
    </widget>
+  </widget>
+  <widget class="QSpinBox" name="myPatchIndex">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>850</y>
+     <width>151</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_23">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>850</y>
+     <width>81</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>myPatches</string>
+   </property>
   </widget>
  </widget>
  <resources/>

@@ -112,7 +112,7 @@ private:
   // ------------   Original patch
 
   originalPatch* myOriginalPatch = nullptr;
-
+  GLuint myPatchIndex = 0;
   //------------      Private Slots
 
 private slots:
@@ -173,6 +173,10 @@ public slots:
   void setScaleFactor(double);
   void setSmoothing(double);
   void setShading(double);
+
+  //  my patch
+
+  void setPatchIndex(int);
 
 signals:
   void xPointChanged(double);
